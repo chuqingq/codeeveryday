@@ -7,8 +7,8 @@ CodeEveryday
 
 ## golang
 
-- ☑ hello world
-- ☑ http server
+- ☑ hello world 20131104[](./20131104)
+- ☑ http server 20131104[](./20131104)
 - ☐ http handler
 - ☐ http client
 - ☐ tcp server
