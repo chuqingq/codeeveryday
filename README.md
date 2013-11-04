@@ -8,13 +8,8 @@ CodeEveryday
 ## golang
 
 ### hello world
-
 ### http server
-
 ### http handler
-
 ### http client
-
 ### tcp server
-
 ### tcp client
