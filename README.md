@@ -5,8 +5,8 @@ CodeEveryday
 
 # golang
 
-- ☑ hello world [20131104](./20131104)
-- ☑ http server [20131104](./20131104)
+- ☑ hello world [20131104_golang入门](./20131104_golang入门)
+- ☑ http server [20131104_golang入门](./20131104_golang入门)
 - ☐ http handler
 - ☐ http client
 - ☐ tcp server
