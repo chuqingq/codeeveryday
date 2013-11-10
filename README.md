@@ -5,9 +5,9 @@ CodeEveryday
 
 # golang
 
-- ☑ hello world [20131104_golang入门](./20131104_golang入门)
-- ☑ http server [20131104_golang入门](./20131104_golang入门)
-- ☑ http handler [20131109_http的handler和client](./20131109_http的handler和client)
-- ☑ http client [20131109_http的handler和client](./20131109_http的handler和client)
-- ☐ tcp server
-- ☐ tcp client
+- ☑ hello world [20131104](./20131104)
+- ☑ http server [20131104](./20131104)
+- ☑ http handler [20131109](./20131109)
+- ☑ http client [20131109](./20131109)
+- ☐ tcp server [20131110](./20131110)
+- ☐ tcp client [20131110](./20131110)
