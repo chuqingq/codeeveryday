@@ -20,12 +20,12 @@ ngx_echo_handler(ngx_http_request_t *r)
     out.next=NULL; 
 
     b->pos=ngx_hello_world;  
-    b->last=ngx_hello_world+sizeof(ngx_hello_world); 
+    b->last=ngx_hello_world+sizeof(ngx_hello_world)-1; 
     b->memory=1; 
     b->last_buf=1; 
 
     r->headers_out.status=NGX_HTTP_OK; 
-    r->headers_out.content_length_n=sizeof(ngx_hello_world); 
+    r->headers_out.content_length_n=sizeof(ngx_hello_world)-1; 
     ngx_http_send_header(r); 
 
     return ngx_http_output_filter(r, &out);

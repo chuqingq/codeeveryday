@@ -5,3 +5,8 @@ make
 
 make install
 
+nginx.conf:
+    location /hello {
+        echo xxx;
+    }
+
