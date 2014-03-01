@@ -40,7 +40,7 @@ func my_pipe(lconn net.Conn, rconn net.Conn) {
         len, err := lconn.Read(buf)
         if err != nil {
             // err.Error() == "xxxx"// TODO
-            println("lconn.Read " + err.Error())
+            println("Read " + err.Error())
             rconn.Close()
             return
         }
