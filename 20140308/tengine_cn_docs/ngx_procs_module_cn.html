@@ -1,0 +1,85 @@
+<html><head><meta charset="UTF-8"></head>
+<h1>模块名</h1>
+
+<h2>Proc 模块</h2>
+
+<p>提供一个让Tengine可以通过写不同模块启动独立进程的机制。</p>
+
+<h1>代码实例</h1>
+
+<p>一个时间回送服务器模块，它运行在一个独立的进程里。</p>
+
+<p>http://tengine.taobao.org/examples/ngx<em>proc</em>daytime_module</p>
+
+<h1>例子</h1>
+
+<pre><code>processes {
+    process echo {
+        eho_str "hello, world";
+        echo on;
+        listen 8888;
+        count 1;
+        priority 1;
+        delay_start 10s;
+        respawn off;
+    }
+
+    process example {
+        count 1;
+        priority 0;
+        delay_start 0s;
+        respawn on;
+    }
+}
+</code></pre>
+
+<h1>指令</h1>
+
+<h2>process</h2>
+
+<p>Syntax: <strong>process</strong> <code>name { }</code></p>
+
+<p>Default: <code>none</code></p>
+
+<p>Context: <code>processes</code></p>
+
+<h2>count</h2>
+
+<p>Syntax: <strong>count</strong> <code>num</code></p>
+
+<p>Default: <code>1</code></p>
+
+<p>Context: <code>process</code></p>
+
+<p>指定启动这个进程的数量。</p>
+
+<h2>priority</h2>
+
+<p>Syntax: <strong>priority</strong> <code>num</code></p>
+
+<p>Default: <code>0</code></p>
+
+<p>Context: <code>process</code></p>
+
+<p>指定进程的优先级(-20 到 20 之间)，越低的数值调度优先级越高。</p>
+
+<h2>delay_start</h2>
+
+<p>Syntax: <strong>delay_start</strong> <code>time</code></p>
+
+<p>Default: <code>300ms</code></p>
+
+<p>Context: <code>process</code></p>
+
+<p>指定延迟启动的时间。</p>
+
+<h2>respawn</h2>
+
+<p>Syntax: <strong>respawn</strong> <code>on | off</code></p>
+
+<p>Default: <code>on</code></p>
+
+<p>Context: <code>process</code></p>
+
+<p>设置为<code>on</code>时，如果进程因为错误意外退出会被Tengine重新启动。</p>
+</html>
