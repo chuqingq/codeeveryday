@@ -1,0 +1,53 @@
+<html><head><meta charset="UTF-8"></head>
+<h1>模块名</h1>
+
+<p><strong>ngx_http_core_module</strong></p>
+
+<p>Tengine针对此模块进行了增强，下面列出了一些增加的指令。</p>
+
+<h1>指令</h1>
+
+<h2>client_body_buffers</h2>
+
+<p>Syntax: <strong>client_body_buffers</strong> <code>number size</code></p>
+
+<p>Default: 16 4k/8k</p>
+
+<p>Context: <code>http, server, location</code></p>
+
+<p>当不缓存上传的请求body到磁盘时，指定每块缓存块大小和数量。所有的缓存块都保存在内存中，并且是按需分配的。默认情况下，缓存块等于系统页的大小。总缓存大小必须大于<code>client_body_postpone_size</code>指令的大小。</p>
+
+<h2>client_body_postpone_size</h2>
+
+<p>Syntax: <strong>client_body_postpone_size</strong> <code>size</code></p>
+
+<p>Default: 64k</p>
+
+<p>Context: <code>http, server, location</code></p>
+
+<p>当打开<code>proxy_request_buffering</code>或<code>fastcgi_request_buffering</code>指令，设置不缓存请求body到磁盘时，tengine每当接受到大于<code>client_body_postpone_size</code>大小的数据或者整个请求都发送完毕，才会往后端发送数据。这可以减少与后端服务器建立的连接数，并减少网络IO的次数。</p>
+
+<h2>proxy_request_buffering</h2>
+
+<p>Syntax: <strong>proxy_request_buffering</strong> <code>on | off</code></p>
+
+<p>Default: <code>on</code></p>
+
+<p>Context: <code>http, server, location</code></p>
+
+<p>指定当上传请求body时是否要将body缓存到磁盘。如果设成off，请求body只会被保存到内存，每当tengine接收到大于<code>client_body_postpone_size</code>的数据时，就发送这部分数据到后端服务器。</p>
+
+<p>默认情况下，当请求body大于<code>client_body_buffer_size</code>时，就会被保存到磁盘。这会增加磁盘IO，对于上传应用来说，服务器的负载会明显增加。</p>
+
+<p>需要注意的是，如果你配置成off且已经发出部分数据，tengine的重试机制就会失效。如果后端返回异常响应，tengine就会直接返回500。此时$request<em>body，$request</em>body_file也会不可用，他们保存的可能是不完整的内容。</p>
+
+<h2>fastcgi_request_buffering</h2>
+
+<p>Syntax: <strong>fastcgi_request_buffering</strong> <code>on | off</code></p>
+
+<p>Default: <code>on</code></p>
+
+<p>Context: <code>http, server, location</code></p>
+
+<p>用法跟<code>proxy_request_buffering</code>指令一样。</p>
+</html>
