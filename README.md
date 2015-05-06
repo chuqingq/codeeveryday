@@ -1,22 +1,32 @@
-CodeEveryday
-============
+## TODO 声控
 
-每天对感兴趣的内容编写一段简单的代码
+在gs使用chrome时报not-allowed，可能因为没有麦克风；
+使用nwjs时直接返回undefined，连not-allowed都没有。是不是可能因为没有麦克风？
 
-# golang
+## TODO 编程控制摄像头拍照和录像
 
-- ☑ hello world [20131104](./20131104)
-- ☑ http server [20131104](./20131104)
-- ☑ http handler [20131109](./20131109)
-- ☑ http client [20131109](./20131109)
-- ☑ tcp server [20131110](./20131110)
-- ☑ tcp client [20131110](./20131110)
-http://coolshell.cn/articles/8460.html
-- ☑ multi retval [20131205](./20131205) 多个返回值第二个可以重复定义
-- ☐ sync mutex http://coolshell.cn/articles/8489.html lockless http://coolshell.cn/articles/8239.html
-- sync/atomic
-- Channel 信道 指定channel的buffer
-- 使用time.NewTimer或time.NewTicker来设置一个定时器
-- 系统调用
-- 执行命令行 os.Args
-- os.Args
+http://blog.163.com/tongfangyuan0000@126/blog/static/43041855200921272753720/
+
+arecord
+-t wav
+-c 1 ？？
+-f ！！！
+-r 8000
+-d 10
+
+http://wenku.baidu.com/link?url=eqe3OE0u9uiNKo2JEuc2oaGssFUdQFQmYJNpBYsEZQymhXeKD1PLC0BBX8NSA2Bimg0_3mIQl8h303MTsRwh33nAgBkv95flNE0qxEkwVQm
+http://blog.csdn.net/wangsheng1202/article/details/7928788
+
+## 利用百度音乐music.baidu.com实现在线用命令下载并播放音乐
+
+## 利用有道笔记或百度云实现博客或笔记命令上传、下载
+
+本地展示markdown？
+
+    http://note.baidu.com
+
+还包括百度的：网盘、通讯录、通话记录、短信、相册（冲印）、文章、记事本、手机找回
+
+## 使用声控控制摄像头拍照和录像
+
+## 实现免费wifi动态密码超时1小时
