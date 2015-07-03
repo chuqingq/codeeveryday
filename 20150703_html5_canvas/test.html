@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--
+http://www.uml.org.cn/html/201208224.asp
+http://www.w3school.com.cn/tags/html_ref_canvas.asp
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+
+<script type="text/javascript">
+function draw() {
+	var c=document.getElementById("canvas1");
+	if (c.getContext) {
+		var cxt=c.getContext("2d");
+		cxt.fillStyle="rgba(0, 0, 255, 0.5)";
+		cxt.beginPath();
+		cxt.arc(70,28,25,0,Math.PI*2,true);
+		cxt.closePath();
+		cxt.fill();
+
+		cxt.fillStyle="rgba(0, 255, 0, 0.5)";
+		cxt.beginPath();
+		cxt.arc(55,48,25,0,Math.PI*2,true);
+		cxt.closePath();
+		cxt.fill();
+
+		cxt.fillStyle="rgba(255, 0, 0 , 0.5)";
+		cxt.beginPath();
+		cxt.arc(85,48,25,0,Math.PI*2,true);
+		cxt.closePath();
+		cxt.fill();
+
+		//第二个图
+		cxt.fillStyle="rgba(255, 0, 0 , 0.5)";
+		cxt.beginPath();
+		cxt.arc(160,48,25,0,Math.PI*2,true);
+		cxt.closePath();
+		cxt.fill();
+
+		cxt.fillStyle="rgba(255, 0, 0 , 0.5)";
+		cxt.beginPath();
+		cxt.arc(170,48,25,0,Math.PI*2,true);
+		cxt.closePath();
+		cxt.fill();
+
+		cxt.fillStyle="rgba(255, 0, 0 , 0.5)";
+		cxt.beginPath();
+		cxt.arc(180,48,25,0,Math.PI*2,true);
+		cxt.closePath();
+		cxt.fill();
+
+		//方块
+		cxt.fillStyle = "rgba(100,100,0, 0.5)";
+		cxt.fillRect (240, 10, 55, 50);
+		cxt.fillStyle = "rgba(100,100,0, 0.5)";
+		cxt.fillRect (250, 20, 55, 50);
+		cxt.fillStyle = "rgba(100,100,0, 0.5)";
+		cxt.fillRect (260, 30, 55, 50);
+
+	}
+	else {
+		alert("sorry!该浏览器不支持canvas效果，更新到最新版本后再来体验吧");
+	}
+
+	// 第二幅图
+	var c = document.getElementById("canvas2");
+	var ctx = c.getContext('2d');
+	cxt.fillStyle="rgba(0, 0, 255, 0.5)";
+
+	//ctx.beginPath();
+	//ctx.moveTo(0, 0);
+	//ctx.lineTo(100, 100);
+	//ctx.closePath();
+	//ctx.stroke();
+	
+	ctx.beginPath();
+	ctx.moveTo(0, 100);
+	for (var x = 0; x < 400; x++) {
+		var y = 101 + Math.sin(x*2*Math.PI/400)*100;
+		ctx.lineTo(x, y);
+	}
+	ctx.moveTo(0, 100);
+	ctx.closePath();
+	ctx.stroke();
+
+}
+
+</script>
+</head>
+
+<body onload="draw();">
+	
+<canvas id="canvas1" width="400" height="100" style="border:1px solid #ccc;"></canvas>
+<canvas id="canvas2" width="400" height="202" style="border:1px solid #ccc;"></canvas>
+
+</body>
+</html>
