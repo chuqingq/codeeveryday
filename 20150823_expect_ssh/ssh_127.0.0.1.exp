@@ -1,0 +1,18 @@
+#!/usr/bin/expect -f
+
+set user chuqq
+set pass chuqingq
+set ip 127.0.0.1
+
+set timeout 10
+
+spawn ssh $user@$ip
+
+expect "assword:"
+send "$pass\r"
+
+expect "$*"
+send "export PS1=\"$user@$ip $ \"\r"
+
+interact
+
