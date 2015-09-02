@@ -1,0 +1,28 @@
+#!/usr/bin/expect -f
+
+set passfile [lindex $argv 0]
+set srcfile [lindex $argv 1]
+set host [lindex $argv 2]
+set dstfile [lindex $argv 3]
+set passwd [lindex $argv 4]
+
+set timeout 10
+spawn scp $srcfile $host:$dstfile
+
+expect {
+  "yes/no*" { send "yes\r"; exp_continue }
+  "assword:" { send "$passwd\r"}
+}
+
+expect {
+  "assword:" {
+    stty -echo
+    expect_user -re "(.*)\n"
+    set passwd "$expect_out(1,string)"
+    send "$passwd\r"
+    system "echo '$host $passwd' >> $passfile"
+    stty echo
+  }
+  eof {}
+}
+

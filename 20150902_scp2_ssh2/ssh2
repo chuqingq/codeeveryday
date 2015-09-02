@@ -1,0 +1,7 @@
+#!/bin/bash
+
+passfile=~/.ssh_pass
+host=$1
+passwd=`awk -v host="$host" '{ if(host==$1) { print $2 }}' $passfile`
+
+login.exp $passfile $host $passwd
