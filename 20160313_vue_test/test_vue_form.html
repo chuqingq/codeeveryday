@@ -10,7 +10,7 @@
     <form id="demo">
         <!-- text -->
         <p>
-            <input type="text" v-model="msg">{{msg}}
+            <input type="text" v-model="msg" lazy>{{msg}}
         </p>
         <!-- checkbox -->
         <p>
@@ -23,9 +23,8 @@
         </p>
         <!-- select -->
         <p>
-            <select v-model="selected">
-                <option>one</option>
-                <option>two</option>
+            <select v-model="selected" options="selected_options" number>
+                <option v-for="option in selected_options" value="{{option.value}}">{{option.text}}</option>
             </select>
             {{selected}}
         </p>
@@ -47,8 +46,15 @@
         msg: 'hi!',
         checked: true,
         picked: 'one',
-        selected: 'two',
-        multiSelect: ['one', 'three']
+        selected: 1,
+        multiSelect: ['one', 'three'],
+        selected_options: [{
+            text: 'A',
+            value: 1
+        }, {
+            text: 'B',
+            value: 2
+        }]
     };
     $(function() {
         new Vue({
