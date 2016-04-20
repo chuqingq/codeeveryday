@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+
+<head>
+    <script src="https://cdn.jsdelivr.net/vue/latest/vue.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-beta1/jquery.min.js"></script>
+</head>
+
+<body>
+    <form id="demo">
+        <!-- text -->
+        <p>
+            <input type="text" v-model="msg" lazy>{{msg}}
+        </p>
+        <!-- checkbox -->
+        <p>
+            <input type="checkbox" v-model="checked">{{checked ? "yes" : "no"}}
+        </p>
+        <!-- radio buttons -->
+        <p>
+            <input type="radio" name="picked" value="one" v-model="picked">
+            <input type="radio" name="picked" value="two" v-model="picked">{{picked}}
+        </p>
+        <!-- select -->
+        <p>
+            <select v-model="selected" options="selected_options" number>
+                <option v-for="option in selected_options" value="{{option.value}}">{{option.text}}</option>
+            </select>
+            {{selected}}
+        </p>
+        <!-- multiple select -->
+        <p>
+            <select v-model="multiSelect" multiple>
+                <option>one</option>
+                <option>two</option>
+                <option>three</option>
+            </select>
+            {{multiSelect}}
+        </p>
+        <p>
+            <pre>data: {{$data | json 2}}</pre>
+        </p>
+    </form>
+    <script type="text/javascript">
+    var data = {
+        msg: 'hi!',
+        checked: true,
+        picked: 'one',
+        selected: 1,
+        multiSelect: ['one', 'three'],
+        selected_options: [{
+            text: 'A',
+            value: 1
+        }, {
+            text: 'B',
+            value: 2
+        }]
+    };
+    $(function() {
+        new Vue({
+            el: '#demo',
+            data: data
+        })
+    });
+    </script>
+</body>
+
+</html>

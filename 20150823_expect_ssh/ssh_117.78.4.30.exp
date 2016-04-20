@@ -1,0 +1,20 @@
+#!/usr/bin/expect -f
+
+set user root
+set pass wow@IMAX
+set ip 117.78.4.30
+
+set timeout 10
+
+spawn ssh $user@$ip
+
+expect "assword:"
+send "$pass\r"
+
+expect {
+  "$*" { send "export PS1=\"$user@$ip $ \"\r" }
+  "#*" { send "export PS1=\"$user@$ip $ \"\r" }
+}
+
+interact
+

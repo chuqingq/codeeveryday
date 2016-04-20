@@ -1,0 +1,13 @@
+#!/bin/bash
+
+passfile=${HOME}/.ssh_pass
+
+srcfile=$1
+dstfile=$2
+parts=(${dstfile//:/ })
+host=${parts[0]}
+path=${parts[1]}
+
+passwd=`awk -v host="$host" '{ if(host==$1) { print $2 }}' $passfile`
+
+_scp.exp $passfile $srcfile $host $path $passwd

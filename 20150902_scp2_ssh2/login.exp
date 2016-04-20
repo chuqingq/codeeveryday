@@ -1,0 +1,31 @@
+#!/usr/bin/expect -f
+
+set passfile [lindex $argv 0]
+
+set host [lindex $argv 1]
+set passwd [lindex $argv 2]
+
+set timeout 10
+spawn ssh $host
+
+expect {
+  "yes/no*" { send "yes\r"; exp_continue }
+  "assword:" { send "$passwd\r"}
+}
+
+expect {
+  "assword:" {
+    stty -echo
+    expect_user -re "(.*)\n"
+    set passwd "$expect_out(1,string)"
+    send "$passwd\r"
+    system "echo '$host $passwd' >> $passfile"
+    stty echo
+    exp_continue
+  }
+  "$*" { send "export PS1=\"$host $ \"\r" }
+  "#*" { send "export PS1=\"$host $ \"\r" }
+}
+
+interact
+
