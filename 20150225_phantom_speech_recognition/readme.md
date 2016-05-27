@@ -1,9 +1,9 @@
-### Ñ§Ï°phantomjs
+### å­¦ä¹ phantomjs
 
-phantomjs»ònwjsÊµÏÖÉù¿Ø
+phantomjsæˆ–nwjså®ç°å£°æ§
 
     http://blog.csdn.net/hemingliang1987/article/details/8642506
 
-phantomÖĞwindowÏÂÃ»ÓĞwebkitSpeechRecognition¶ÔÏó¡£
+phantomä¸­windowä¸‹æ²¡æœ‰webkitSpeechRecognitionå¯¹è±¡ã€‚
 
-ºóĞøÖ»ÄÜ¿¼ÂÇ°Ù¶ÈµÄÓïÒôÊ¶±ğµÄrest api.
+åç»­åªèƒ½è€ƒè™‘ç™¾åº¦çš„è¯­éŸ³è¯†åˆ«çš„rest api.
