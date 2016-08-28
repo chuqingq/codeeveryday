@@ -1,3 +1,7 @@
+// wechaty, npm install --save wechaty
+// mongodb
+// 启动后扫码登录
+
 const Wechaty = require('wechaty')
 const bot = new Wechaty()
 
