@@ -1,0 +1,376 @@
+2016/03/12 10:39:39 receive message: 你好
+2016/03/12 12:25:01 receive message: 股海护航
+2016/03/12 12:25:23 receive message: 潘尚斌
+2016/03/12 12:25:36 receive message: 😊
+2016/03/12 12:25:43 receive message: 你好
+2016/03/12 12:25:57 receive message: 你叫什么名字
+2016/03/12 12:26:15 receive message: 妈蛋
+2016/03/12 12:26:24 receive message: 卧槽
+2016/03/12 12:26:35 receive message: 呵呵
+2016/03/12 13:23:25 receive message: 可是
+2016/03/12 13:23:40 receive message: 你是逗比
+2016/03/12 13:24:46 receive message: alphago
+2016/03/12 13:24:57 receive message: 李世石
+2016/03/12 13:57:32 receive message: 你是我开发的
+panic: runtime error: invalid memory address or nil pointer dereference
+[signal 0xb code=0x1 addr=0x0 pc=0x4056e5]
+
+goroutine 320 [running]:
+main.handlePushMessage(0x1, 0xc8202d2020, 0x14)
+	/home/panshangbin/semantic/mplusclient.go:228 +0x2365
+created by main.main
+	/home/panshangbin/semantic/mplusclient.go:144 +0xb9e
+
+goroutine 1 [IO wait]:
+net.runtime_pollWait(0x7fa578862600, 0x72, 0xc82000a0f0)
+	/usr/local/go/src/runtime/netpoll.go:157 +0x60
+net.(*pollDesc).Wait(0xc8200aa0d0, 0x72, 0x0, 0x0)
+	/usr/local/go/src/net/fd_poll_runtime.go:73 +0x3a
+net.(*pollDesc).WaitRead(0xc8200aa0d0, 0x0, 0x0)
+	/usr/local/go/src/net/fd_poll_runtime.go:78 +0x36
+net.(*netFD).Read(0xc8200aa070, 0xc8200f4400, 0x400, 0x400, 0x0, 0x7fa57885d028, 0xc82000a0f0)
+	/usr/local/go/src/net/fd_unix.go:232 +0x23a
+net.(*conn).Read(0xc82007c030, 0xc8200f4400, 0x400, 0x400, 0x0, 0x0, 0x0)
+	/usr/local/go/src/net/net.go:172 +0xe4
+main.main()
+	/home/panshangbin/semantic/mplusclient.go:128 +0x8c6
+
+goroutine 17 [syscall, 215 minutes, locked to thread]:
+runtime.goexit()
+	/usr/local/go/src/runtime/asm_amd64.s:1696 +0x1
+
+goroutine 240 [select, 214 minutes]:
+net/http.(*persistConn).readLoop(0xc8204c4840)
+	/usr/local/go/src/net/http/transport.go:976 +0xac7
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:685 +0xc78
+
+goroutine 51 [select, 215 minutes]:
+net/http.(*persistConn).readLoop(0xc8202433f0)
+	/usr/local/go/src/net/http/transport.go:976 +0xac7
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:685 +0xc78
+
+goroutine 60 [select, 215 minutes]:
+net/http.(*persistConn).readLoop(0xc820243ef0)
+	/usr/local/go/src/net/http/transport.go:976 +0xac7
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:685 +0xc78
+
+goroutine 227 [select, 215 minutes]:
+net/http.(*persistConn).readLoop(0xc820229290)
+	/usr/local/go/src/net/http/transport.go:976 +0xac7
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:685 +0xc78
+
+goroutine 77 [select, 215 minutes]:
+net/http.(*persistConn).readLoop(0xc8203d48f0)
+	/usr/local/go/src/net/http/transport.go:976 +0xac7
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:685 +0xc78
+
+goroutine 33 [select, 215 minutes]:
+net/http.(*persistConn).readLoop(0xc820243810)
+	/usr/local/go/src/net/http/transport.go:976 +0xac7
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:685 +0xc78
+
+goroutine 38 [select, 215 minutes]:
+net/http.(*persistConn).readLoop(0xc82017e210)
+	/usr/local/go/src/net/http/transport.go:976 +0xac7
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:685 +0xc78
+
+goroutine 39 [select, 215 minutes]:
+net/http.(*persistConn).writeLoop(0xc82017e210)
+	/usr/local/go/src/net/http/transport.go:1009 +0x40c
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:686 +0xc9d
+
+goroutine 66 [select, 215 minutes]:
+net/http.(*persistConn).writeLoop(0xc820243810)
+	/usr/local/go/src/net/http/transport.go:1009 +0x40c
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:686 +0xc9d
+
+goroutine 52 [select, 215 minutes]:
+net/http.(*persistConn).writeLoop(0xc8202433f0)
+	/usr/local/go/src/net/http/transport.go:1009 +0x40c
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:686 +0xc9d
+
+goroutine 222 [select, 215 minutes]:
+net/http.(*persistConn).writeLoop(0xc820327130)
+	/usr/local/go/src/net/http/transport.go:1009 +0x40c
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:686 +0xc9d
+
+goroutine 62 [select, 215 minutes]:
+net/http.(*persistConn).readLoop(0xc8204c5b80)
+	/usr/local/go/src/net/http/transport.go:976 +0xac7
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:685 +0xc78
+
+goroutine 46 [select, 215 minutes]:
+net/http.(*persistConn).readLoop(0xc8203d40b0)
+	/usr/local/go/src/net/http/transport.go:976 +0xac7
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:685 +0xc78
+
+goroutine 47 [select, 215 minutes]:
+net/http.(*persistConn).writeLoop(0xc8203d40b0)
+	/usr/local/go/src/net/http/transport.go:1009 +0x40c
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:686 +0xc9d
+
+goroutine 61 [select, 215 minutes]:
+net/http.(*persistConn).writeLoop(0xc820243ef0)
+	/usr/local/go/src/net/http/transport.go:1009 +0x40c
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:686 +0xc9d
+
+goroutine 318 [select, 124 minutes]:
+net/http.(*persistConn).readLoop(0xc820242580)
+	/usr/local/go/src/net/http/transport.go:976 +0xac7
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:685 +0xc78
+
+goroutine 63 [select, 215 minutes]:
+net/http.(*persistConn).writeLoop(0xc8204c5b80)
+	/usr/local/go/src/net/http/transport.go:1009 +0x40c
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:686 +0xc9d
+
+goroutine 78 [select, 215 minutes]:
+net/http.(*persistConn).writeLoop(0xc8203d48f0)
+	/usr/local/go/src/net/http/transport.go:1009 +0x40c
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:686 +0xc9d
+
+goroutine 311 [select, 156 minutes]:
+net/http.(*persistConn).readLoop(0xc82011a4d0)
+	/usr/local/go/src/net/http/transport.go:976 +0xac7
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:685 +0xc78
+
+goroutine 324 [select, 158 minutes]:
+net/http.(*persistConn).readLoop(0xc8202c8dc0)
+	/usr/local/go/src/net/http/transport.go:976 +0xac7
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:685 +0xc78
+
+goroutine 234 [select, 214 minutes]:
+net/http.(*persistConn).readLoop(0xc820228160)
+	/usr/local/go/src/net/http/transport.go:976 +0xac7
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:685 +0xc78
+
+goroutine 181 [select, 215 minutes]:
+net/http.(*persistConn).writeLoop(0xc82017e840)
+	/usr/local/go/src/net/http/transport.go:1009 +0x40c
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:686 +0xc9d
+
+goroutine 85 [select, 215 minutes]:
+net/http.(*persistConn).readLoop(0xc82017e370)
+	/usr/local/go/src/net/http/transport.go:976 +0xac7
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:685 +0xc78
+
+goroutine 86 [select, 215 minutes]:
+net/http.(*persistConn).writeLoop(0xc82017e370)
+	/usr/local/go/src/net/http/transport.go:1009 +0x40c
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:686 +0xc9d
+
+goroutine 264 [select, 214 minutes]:
+net/http.(*persistConn).writeLoop(0xc82054b4a0)
+	/usr/local/go/src/net/http/transport.go:1009 +0x40c
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:686 +0xc9d
+
+goroutine 180 [select, 215 minutes]:
+net/http.(*persistConn).readLoop(0xc82017e840)
+	/usr/local/go/src/net/http/transport.go:976 +0xac7
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:685 +0xc78
+
+goroutine 215 [select, 215 minutes]:
+net/http.(*persistConn).readLoop(0xc820228a50)
+	/usr/local/go/src/net/http/transport.go:976 +0xac7
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:685 +0xc78
+
+goroutine 177 [select, 215 minutes]:
+net/http.(*persistConn).readLoop(0xc820228370)
+	/usr/local/go/src/net/http/transport.go:976 +0xac7
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:685 +0xc78
+
+goroutine 210 [select, 215 minutes]:
+net/http.(*persistConn).writeLoop(0xc820228370)
+	/usr/local/go/src/net/http/transport.go:1009 +0x40c
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:686 +0xc9d
+
+goroutine 241 [select, 214 minutes]:
+net/http.(*persistConn).writeLoop(0xc8204c4840)
+	/usr/local/go/src/net/http/transport.go:1009 +0x40c
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:686 +0xc9d
+
+goroutine 203 [select, 215 minutes]:
+net/http.(*persistConn).readLoop(0xc820546e70)
+	/usr/local/go/src/net/http/transport.go:976 +0xac7
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:685 +0xc78
+
+goroutine 228 [select, 215 minutes]:
+net/http.(*persistConn).writeLoop(0xc820229290)
+	/usr/local/go/src/net/http/transport.go:1009 +0x40c
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:686 +0xc9d
+
+goroutine 216 [select, 215 minutes]:
+net/http.(*persistConn).writeLoop(0xc820228a50)
+	/usr/local/go/src/net/http/transport.go:1009 +0x40c
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:686 +0xc9d
+
+goroutine 204 [select, 215 minutes]:
+net/http.(*persistConn).writeLoop(0xc820546e70)
+	/usr/local/go/src/net/http/transport.go:1009 +0x40c
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:686 +0xc9d
+
+goroutine 287 [select, 156 minutes]:
+net/http.(*persistConn).writeLoop(0xc8202284d0)
+	/usr/local/go/src/net/http/transport.go:1009 +0x40c
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:686 +0xc9d
+
+goroutine 319 [select, 124 minutes]:
+net/http.(*persistConn).writeLoop(0xc820242580)
+	/usr/local/go/src/net/http/transport.go:1009 +0x40c
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:686 +0xc9d
+
+goroutine 221 [select, 215 minutes]:
+net/http.(*persistConn).readLoop(0xc820327130)
+	/usr/local/go/src/net/http/transport.go:976 +0xac7
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:685 +0xc78
+
+goroutine 312 [select, 156 minutes]:
+net/http.(*persistConn).writeLoop(0xc82011a4d0)
+	/usr/local/go/src/net/http/transport.go:1009 +0x40c
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:686 +0xc9d
+
+goroutine 250 [select, 214 minutes]:
+net/http.(*persistConn).readLoop(0xc82052c2c0)
+	/usr/local/go/src/net/http/transport.go:976 +0xac7
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:685 +0xc78
+
+goroutine 251 [select, 214 minutes]:
+net/http.(*persistConn).writeLoop(0xc82052c2c0)
+	/usr/local/go/src/net/http/transport.go:1009 +0x40c
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:686 +0xc9d
+
+goroutine 325 [select, 158 minutes]:
+net/http.(*persistConn).writeLoop(0xc8202c8dc0)
+	/usr/local/go/src/net/http/transport.go:1009 +0x40c
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:686 +0xc9d
+
+goroutine 235 [select, 214 minutes]:
+net/http.(*persistConn).writeLoop(0xc820228160)
+	/usr/local/go/src/net/http/transport.go:1009 +0x40c
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:686 +0xc9d
+
+goroutine 263 [select, 214 minutes]:
+net/http.(*persistConn).readLoop(0xc82054b4a0)
+	/usr/local/go/src/net/http/transport.go:976 +0xac7
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:685 +0xc78
+
+goroutine 286 [select, 156 minutes]:
+net/http.(*persistConn).readLoop(0xc8202284d0)
+	/usr/local/go/src/net/http/transport.go:976 +0xac7
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:685 +0xc78
+
+goroutine 344 [select, 158 minutes]:
+net/http.(*persistConn).readLoop(0xc82046c420)
+	/usr/local/go/src/net/http/transport.go:976 +0xac7
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:685 +0xc78
+
+goroutine 297 [select, 158 minutes]:
+net/http.(*persistConn).readLoop(0xc82011bad0)
+	/usr/local/go/src/net/http/transport.go:976 +0xac7
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:685 +0xc78
+
+goroutine 298 [select, 158 minutes]:
+net/http.(*persistConn).writeLoop(0xc82011bad0)
+	/usr/local/go/src/net/http/transport.go:1009 +0x40c
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:686 +0xc9d
+
+goroutine 294 [select, 158 minutes]:
+net/http.(*persistConn).readLoop(0xc8205462c0)
+	/usr/local/go/src/net/http/transport.go:976 +0xac7
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:685 +0xc78
+
+goroutine 295 [select, 158 minutes]:
+net/http.(*persistConn).writeLoop(0xc8205462c0)
+	/usr/local/go/src/net/http/transport.go:1009 +0x40c
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:686 +0xc9d
+
+goroutine 306 [select, 158 minutes]:
+net/http.(*persistConn).readLoop(0xc820546dc0)
+	/usr/local/go/src/net/http/transport.go:976 +0xac7
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:685 +0xc78
+
+goroutine 307 [select, 158 minutes]:
+net/http.(*persistConn).writeLoop(0xc820546dc0)
+	/usr/local/go/src/net/http/transport.go:1009 +0x40c
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:686 +0xc9d
+
+goroutine 345 [select, 158 minutes]:
+net/http.(*persistConn).writeLoop(0xc82046c420)
+	/usr/local/go/src/net/http/transport.go:1009 +0x40c
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:686 +0xc9d
+
+goroutine 317 [select, 124 minutes]:
+net/http.(*persistConn).writeLoop(0xc8204c4210)
+	/usr/local/go/src/net/http/transport.go:1009 +0x40c
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:686 +0xc9d
+
+goroutine 354 [select, 156 minutes]:
+net/http.(*persistConn).readLoop(0xc8203273f0)
+	/usr/local/go/src/net/http/transport.go:976 +0xac7
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:685 +0xc78
+
+goroutine 316 [select, 124 minutes]:
+net/http.(*persistConn).readLoop(0xc8204c4210)
+	/usr/local/go/src/net/http/transport.go:976 +0xac7
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:685 +0xc78
+
+goroutine 355 [select, 156 minutes]:
+net/http.(*persistConn).writeLoop(0xc8203273f0)
+	/usr/local/go/src/net/http/transport.go:1009 +0x40c
+created by net/http.(*Transport).dialConn
+	/usr/local/go/src/net/http/transport.go:686 +0xc9d
