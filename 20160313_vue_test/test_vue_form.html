@@ -23,8 +23,8 @@
         </p>
         <!-- select -->
         <p>
-            <select v-model="selected" options="selected_options" number>
-                <option v-for="option in selected_options" value="{{option.value}}">{{option.text}}</option>
+            <select v-model="selected">
+                <option v-for="op in selected_options" v-bind:value="op.value">{{op.text}}</option>
             </select>
             {{selected}}
         </p>
