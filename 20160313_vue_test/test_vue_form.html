@@ -27,6 +27,7 @@
                 <option v-for="op in selected_options" v-bind:value="op.value">{{op.text}}</option>
             </select>
             {{selected}}
+            <div v-show="open">这是一段隐藏的内容，只有当值为2的时候才显示</div>
         </p>
         <!-- multiple select -->
         <p>
@@ -59,7 +60,12 @@
     $(function() {
         new Vue({
             el: '#demo',
-            data: data
+            data: data,
+            watch: {
+                selected: function(val) {
+                   this.open = val == 2;
+                }
+            }
         })
     });
     </script>
