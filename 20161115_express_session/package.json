@@ -1,0 +1,15 @@
+{
+  "name": "20161115_express_session",
+  "version": "1.0.0",
+  "description": "test express session maxAge",
+  "main": "express_session.js",
+  "dependencies": {
+    "express": "^4.14.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node express_session.js"
+  },
+  "author": "chuqq",
+  "license": "ISC"
+}
