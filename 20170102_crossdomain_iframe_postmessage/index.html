@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>cross domain: iframe+postmessage</title>
+
+	<script type="text/javascript" src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>
+	<!-- <script type="text/javascript" src="jquery.xdomainajax.js"></script> -->
+	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery-ajaxtransport-xdomainrequest/1.0.3/jquery.xdomainrequest.min.js"></script>
+</head>
+<body>
+
+<script type="text/javascript">
+	window.onmessage = function(message) {
+		console.log('main page received: ' + message);
+	};
+
+	// function onload2() {
+	// 	console.log('onload2');
+	// 	$.get('http://api.map.baidu.com/telematics/v3/weather?location=%E5%8C%97%E4%BA%AC&output=json&ak=W69oaDTCfuGwzNwmtVvgWfGH',
+	// 		function(res) {
+	// 			console.log('iframe received:' + res);
+	// 			$('#iframe').contentWindow.postMessage(res, '*');
+	// 		})
+	// }
+</script>
+
+<iframe id='iframe' src="http://api.map.baidu.com/telematics/v3/weather?location=%E5%8C%97%E4%BA%AC&output=json&ak=W69oaDTCfuGwzNwmtVvgWfGH">
+	<script type="text/javascript">
+		window.onload = function() {
+			console.log('iframe onload');
+		}
+	</script>
+</iframe>
+
+</body>
+</html>
