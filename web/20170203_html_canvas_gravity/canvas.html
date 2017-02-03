@@ -1,0 +1,55 @@
+<!DOCTYPE HTML>
+<html>
+<body>
+
+<canvas id="myCanvas" width="500" height="500" style="border:1px solid #c3c3c3;">
+Your browser does not support the canvas element.
+</canvas>
+
+<script type="text/javascript">
+
+var ctx = document.getElementById("myCanvas").getContext("2d");
+
+const pxpermeter = 2834.6; // 72dpi      1厘米=28.346像素
+
+const height = 500;
+const width = 500;
+
+const starttime = new Date().getTime();
+const startx = width/2;
+const starty = 50;
+const stopy = height-starty;
+const g = 9.8; // 加速度
+const scale = 10;
+const droptime = Math.sqrt(height*scale/pxpermeter/g*2)*1000; // 下落时间，毫秒
+console.log('droptime:', droptime);
+
+ctx.moveTo(startx, starty);
+ctx.lineTo(startx, starty+1);
+ctx.stroke();
+
+var timer = setInterval(function() {
+    console.log('...');
+
+    var time = (new Date().getTime()- starttime)%(2*droptime);
+    console.log('time:', time);
+    if (time > droptime) {
+        time = droptime*2 - time;
+        // clearInterval(timer);
+    }
+    ctx.clearRect(0,0,width,height);
+
+    var h = (9.8*(time/1000)*(time/1000))/2*pxpermeter/scale;
+    console.log('h:', h);
+
+    ctx.fillStyle = "red";
+    ctx.beginPath();
+    ctx.arc(startx, starty+h, 20, 0, Math.PI * 2, 1);
+    ctx.closePath();
+    ctx.fill();
+}, 1);
+
+</script>
+
+</body>
+</html>
