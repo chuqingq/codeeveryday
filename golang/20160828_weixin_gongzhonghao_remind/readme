@@ -1,2 +1,4 @@
-依赖：cnpm install --save wechat/wechat-api/express/mongodb/...
+依赖：cnpm install --save wechat wechat-api express mongodb date-format date-parser
+数据库：拷贝和修改/etc/mongodb.conf，确保不对外
+数据库：mongod -f mongodb.conf
 目前：node weixin22.js
