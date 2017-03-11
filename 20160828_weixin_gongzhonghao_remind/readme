@@ -2,3 +2,9 @@
 数据库：拷贝和修改/etc/mongodb.conf，确保不对外
 数据库：mongod -f mongodb.conf
 目前：node weixin22.js
+
+DONE 把api.sendText换成api.sendTemplate，确保不会超时
+TODO 接收提醒时回复text： Set remind success!\nTime: 2017-03-12 12:30:00\nContent: 提醒我中午吃饭
+TODO 到时间发送模板消息： Remind\nTime:  2017-03-12 12:30:00\nContent: 提醒我中午吃饭
+TODO 把date-parser和date-format换成fecha，只支持201703122359 YYYYMMDDHHmm和03122359两种格式
+
