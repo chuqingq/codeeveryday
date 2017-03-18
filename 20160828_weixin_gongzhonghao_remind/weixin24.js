@@ -9,6 +9,9 @@ var fecha = require('fecha');
 
 var app = connect();
 
+var OAuth = require('wechat-oauth');
+var api = new OAuth('appid', 'secret');
+
 process.on('uncaughtException', function(err) {
     console.log('uncaughtException:', err);
 });
@@ -147,6 +150,26 @@ function handleMsg(user, content, res) {
     });
   });
 }
+
+app.use('/remind/new', function(req, res) {
+  console.log('/remind/new:');
+  oauth.getUser('openId', function(err, result) {
+    if (err) {
+      console.log("getUser error: " + err);
+    }
+    console.log('getUser result: ' + JSON.stringify(result));
+  });
+  console.log('query: '+ JSON.stringify(req.query));
+  res.end('/remind/new');
+});
+app.use('/remind/save', function(req, res) {
+  console.log('/remind/save:');
+  res.end('/remind/save');
+});
+app.use('/remind/get', function(req, res) {
+  console.log('/remind/get:');
+  res.end('/remind/get');
+});
 
 // 启动服务
 var server = app.listen(80, function() {
