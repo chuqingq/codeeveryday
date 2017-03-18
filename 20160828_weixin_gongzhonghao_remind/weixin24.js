@@ -152,12 +152,13 @@ function handleMsg(user, content, res) {
 }
 
 app.use('/remind/new', function(req, res) {
-  console.log('/remind/new:');
-  oauth.getUser('openId', function(err, result) {
+  console.log('/remind/new:'+req.query.code);
+  oauth.getAccessToken(req.query.code, function(err, result) {
     if (err) {
       console.log("getUser error: " + err);
     }
     console.log('getUser result: ' + JSON.stringify(result));
+    console.log('getUser openid: ' + result.data.openid);
   });
   console.log('query: '+ JSON.stringify(req.query));
   res.end('/remind/new');
