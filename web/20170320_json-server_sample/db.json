@@ -1,0 +1,28 @@
+{
+  "posts": [
+    {
+      "name": "myname",
+      "id": 1,
+      "name1": "myname1"
+    },
+    {
+      "id": 2,
+      "title": "json-server",
+      "author": "typicode2"
+    },
+    {
+      "'{id:1,name:myname}'": "",
+      "id": 3
+    }
+  ],
+  "comments": [
+    {
+      "id": 1,
+      "body": "some comment",
+      "postId": 1
+    }
+  ],
+  "profile": {
+    "name": "typicode"
+  }
+}
