@@ -21,14 +21,25 @@
     <router-view></router-view>
   </div>
 
+  <script type="text/x-template" id="foo-template">
+    <div>foo123</div>
+  </script>
+
+  <script type="text/x-template" id="bar-template">
+    <div>bar321</div>
+  </script>
+
   <script type="text/javascript">
     console.log('123123123')
     // 0. 如果使用模块化机制编程，導入Vue和VueRouter，要调用 Vue.use(VueRouter)
 
     // 1. 定义（路由）组件。
     // 可以从其他文件 import 进来
-    const Foo = { template: '<div>foo</div>' }
-    const Bar = { template: '<div>bar</div>' }
+    // chuqq: 这两种方式都可以
+    // const Foo = { template: '<div>foo</div>' }
+    // const Bar = { template: '<div>bar</div>' }
+    const Foo = { template: '#foo-template' }
+    const Bar = { template: '#bar-template' }
 
     // 2. 定义路由
     // 每个路由应该映射一个组件。 其中"component" 可以是
@@ -57,4 +68,5 @@
   </script>
 </body>
 </html>
+
 
