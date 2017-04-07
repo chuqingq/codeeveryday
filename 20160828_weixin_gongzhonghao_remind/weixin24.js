@@ -87,16 +87,18 @@ app.use('/wechat', wechat(config, wechat.text(function(message, req, res, next) 
   handleMsg(message.FromUserName, message.Recognition, res);
 }).event(function(message, req, res, next) {
   log.debug('/wechat event: ', message);
-  var msg = '';
-  if (message.EventKey == 'SETREMIND_10') {
-    msg = '10分钟后提醒我';
-  } else if (message.EventKey == 'SETREMIND_30') {
-    msg = '30分钟后提醒我';
-  } else if (message.EventKey == 'SETREMIND_60') {
-    msg = '60分钟后提醒我';
-  } else {
-    msg = '不支持的event: ' + message.EventKey;
+  if (message.Event != 'CLICK') {
+    log.debug('not expected event: ', message.Event);
+    return;
   }
+  var match = message.EventKey.match(/^SETREMIND_([0-9]+)$/)
+  if (!res) {
+    log.warn('非预期的eventkey: ', message.EventKey);
+    res.reply('非预期的eventkey: ' + message.EventKey)
+    return;
+  }
+  var msg = match[1] + '分钟后提醒我';
+  log.debug('msg: ' + msg);
   handleMsg(message.FromUserName, msg, res);
 })));
 
@@ -193,3 +195,4 @@ var server = app.listen(80, function() {
 
   log.info('weixin app listening at http://%s:%s', host, port);
 });
+
