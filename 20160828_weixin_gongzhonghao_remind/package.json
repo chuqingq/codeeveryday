@@ -9,5 +9,8 @@
     "wechat": "^2.1.0",
     "wechat-api": "^1.32.0",
     "wechat-oauth": "^1.2.1"
+  },
+  "scripts": {
+    "start": "node weixin24.js 1>log 2>&1"
   }
 }
