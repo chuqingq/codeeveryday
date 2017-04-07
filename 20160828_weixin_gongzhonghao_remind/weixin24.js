@@ -54,7 +54,7 @@ mongodb.MongoClient.connect('mongodb://localhost:27017/weixin', function(err, db
     // console.log('setInterval')
     collection.find({time: {$lt: new Date()}, ishandled: false}).toArray(function(err, docs) {
       if (err) {
-        console.log('collection.find.toArray error:', err);
+        log.error('collection.find.toArray error:', err);
         return;
       }
       // console.log('docs:', docs);
