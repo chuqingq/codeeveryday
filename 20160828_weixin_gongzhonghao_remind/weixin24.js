@@ -7,12 +7,16 @@ var mongodb = require('mongodb');
 var connect = require('express');
 var fecha = require('fecha');
 
+var fs = require('fs')
+  , Log = require('log')
+  , log = new Log('debug', fs.createWriteStream('my.log'));
+
 var config = require('./package.json').config;
 
 var app = connect();
 
 process.on('uncaughtException', function(err) {
-    console.log('uncaughtException:', err);
+    log.error('uncaughtException:', err);
 });
 
 var api = new weapi(config.appid, config.appsecret);
@@ -20,9 +24,9 @@ var api = new weapi(config.appid, config.appsecret);
 // 设置菜单
 api.createMenu(config.menu, function(err, res) {
   if (err) {
-    console.log('菜单设置失败：', err);
+    log.error('菜单设置失败：', err);
   } else {
-    console.log('菜单设置成功');
+    log.info('菜单设置成功');
   }
 });
 
@@ -34,14 +38,14 @@ var collection;
 // 打开mongo，并删除已超期的任务
 mongodb.MongoClient.connect('mongodb://localhost:27017/weixin', function(err, db) {
   if (err) {
-    console.log('mongodb.MongoClient.connect error:', err);
+    log.error('mongodb.MongoClient.connect error:', err);
     return;
   }
-  console.log("MongoClient.connect success");
+  log.info("MongoClient.connect success");
 
   collection = db.collection('remind');
   if (!collection) {
-    console.log('db.collection("remind") error: collection is null');
+    log.error('db.collection("remind") error: collection is null');
     return;
   }
 
@@ -55,7 +59,7 @@ mongodb.MongoClient.connect('mongodb://localhost:27017/weixin', function(err, db
       }
       // console.log('docs:', docs);
       docs.forEach(function(doc) {
-        console.log('send doc:', doc);
+        log.info('send doc:', doc);
         var data = {
             time: {value: fecha.format(doc.time, 'YYYY-MM-DD HH:mm:ss'), color: '#173177'},
             content: {value: doc.content, color: '#173177'}
@@ -63,10 +67,10 @@ mongodb.MongoClient.connect('mongodb://localhost:27017/weixin', function(err, db
         // api.sendText(doc.user, doc.content, function(err, data, res) {
         api.sendTemplate(doc.user, 'n3lQoXJNPH01DuVLkkeBajv0BIpJXUKAWQUSIbLYWHA', 'http://www.baidu.com', data, function(err, data, res) {
           if (err) {
-            console.log('api.sendTemplate error: ', err, data, res);
+            log.error('api.sendTemplate error: ', err, data, res);
           }
           collection.updateOne({_id: mongodb.ObjectId(doc._id)}, {'$set': {ishandled: true}}, function(err) {
-            console.log('delete doc:', doc);
+            log.debug('delete doc:', doc);
           });
         });
       });
@@ -76,13 +80,13 @@ mongodb.MongoClient.connect('mongodb://localhost:27017/weixin', function(err, db
 
 app.use(connect.query());
 app.use('/wechat', wechat(config, wechat.text(function(message, req, res, next) {
-  console.log('/wechat text:', message.Content);
+  log.debug('/wechat text:', message.Content);
   handleMsg(message.FromUserName, message.Content, res);
 }).voice(function(message, req, res, next) {
-  console.log("/wechat voice:", message.Recognition);
+  log.debug("/wechat voice:", message.Recognition);
   handleMsg(message.FromUserName, message.Recognition, res);
 }).event(function(message, req, res, next) {
-  console.log('/wechat event: ', message);
+  log.debug('/wechat event: ', message);
   var msg = '';
   if (message.EventKey == 'SETREMIND_10') {
     msg = '10分钟后提醒我';
@@ -106,10 +110,10 @@ function handleMsg(user, content, res) {
 
   api.semantic(user, opts, function(err, data, res2) {
     if (err) {
-      console.log('api.semantic error: ', err, data, res2);
+      log.error('api.semantic error: ', err, data, res2);
       // return;
     }
-    console.log('semantic result: ', data);
+    // log.debug('semantic result: ', data);
 
     var datetime;
     if (err != null
@@ -117,7 +121,7 @@ function handleMsg(user, content, res) {
       || data.semantic == undefined
       || data.semantic.details == undefined
       || data.semantic.details.datetime == undefined) {
-        console.log('semantic error: ' + err + '.\n' + content);
+        log.error('semantic error: ' + err + '.\n' + content);
         var array = content.split(' ', 3);
         if (array.length == 3) {
             datetime = array[0] + ' ' + array[1];
@@ -128,9 +132,9 @@ function handleMsg(user, content, res) {
             return;
         }
     } else {
-        console.log('datetime: ', data.semantic.details.datetime);
+        // log.debug('datetime: ', data.semantic.details.datetime);
         datetime = data.semantic.details.datetime.date + ' ' + data.semantic.details.datetime.time;
-        console.log('semantic datetime: ' + datetime);
+        // log.debug('semantic datetime: ' + datetime);
     }
     var datetime2 = fecha.parse(datetime, 'YYYY-MM-DD HH:mm:ss');
     if (datetime2.toString() == 'Invalid Date') {
@@ -147,12 +151,12 @@ function handleMsg(user, content, res) {
     var doc = {time: datetime2, user: user, content: content, ishandled: false};
     collection.insert(doc, function(err) {
       if (err) {
-        console.log('Server error: ', err);
+        log.error('collection.insert error: ', err);
         res.reply('Server error: ' + err);
         return;
       }
 
-      console.log('insert doc:', doc, '::', err);
+      log.debug('insert doc:', doc, '::', err);
       res.reply('Set timer success!\nTime: '+datetime+'\nContent: '+content);
     });
   });
@@ -162,22 +166,22 @@ function handleMsg(user, content, res) {
 //  res.end('Hello World!');
 //});
 app.use('/remind/new', function(req, res) {
-  console.log('/remind/new:'+req.query.code);
+  log.debug('/remind/new:'+req.query.code);
   oauth.getAccessToken(req.query.code, function(err, result) {
     if (err) {
-      console.log("getUser error: " + err);
+      log.error("getUser error: " + err);
     }
-    console.log('getUser result: ' + JSON.stringify(result));
+    log.debug('getUser result: ' + JSON.stringify(result));
   });
-  console.log('query: '+ JSON.stringify(req.query));
+  log.debug('query: '+ JSON.stringify(req.query));
   res.end('/remind/new');
 });
 app.use('/remind/save', function(req, res) {
-  console.log('/remind/save:');
+  log.debug('/remind/save:');
   res.end('/remind/save');
 });
 app.use('/remind/get', function(req, res) {
-  console.log('/remind/get:');
+  log.debug('/remind/get:');
   res.end('/remind/get');
 });
 
@@ -187,6 +191,5 @@ var server = app.listen(80, function() {
   var host = server.address().address;
   var port = server.address().port;
 
-  console.log('weixin app listening at http://%s:%s', host, port);
+  log.info('weixin app listening at http://%s:%s', host, port);
 });
-

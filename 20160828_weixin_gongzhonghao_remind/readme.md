@@ -3,7 +3,7 @@
 ```
 cd xx-wechat-remind
 git pull xxx-wechat-remind
-npm install wechat wechat-api express mongodb date-format date-parser
+npm install #wechat wechat-api express mongodb date-format date-parser
 ```
 
 # db
@@ -19,9 +19,8 @@ ctrl-a ctrl-d
 # start
 
 ```
-screen
-nodejs weixin24.js 2>&1 1>>log &
-ctrl-a ctrl-d
+npm start
+# screen -dmS weixin-mp-remind node weixin24.js
 ```
 
 # TODO
