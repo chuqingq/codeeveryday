@@ -1,0 +1,13 @@
+{
+  "name": "weixin-mp-remind",
+  "version": "0.2.4",
+  "description": "微信公众号提醒小工具",
+  "dependencies": {
+    "express": "^4.15.2",
+    "fecha": "^2.3.0",
+    "mongodb": "^2.2.24",
+    "wechat": "^2.1.0",
+    "wechat-api": "^1.32.0",
+    "wechat-oauth": "^1.2.1"
+  }
+}
