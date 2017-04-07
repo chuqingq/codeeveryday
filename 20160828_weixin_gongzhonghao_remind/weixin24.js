@@ -7,17 +7,13 @@ var mongodb = require('mongodb');
 var connect = require('express');
 var fecha = require('fecha');
 
+var config = require('./package.json').config;
+
 var app = connect();
 
 process.on('uncaughtException', function(err) {
     console.log('uncaughtException:', err);
 });
-
-var config = {
-  token: 'chuqq',
-  appid: 'wx0288bf03ed5da89b',
-  appsecret: 'd4624c36b6795d1d99dcf0547af5443d'
-};
 
 var api = new weapi(config.appid, config.appsecret);
 
