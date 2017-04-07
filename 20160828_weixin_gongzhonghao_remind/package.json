@@ -11,7 +11,7 @@
         "wechat-oauth": "^1.2.1"
     },
     "scripts": {
-        "start": "screen -dmS weixin-mp-remind node weixin24.js 1>log 2>&1"
+        "start": "screen -dmS weixin-mp-remind node weixin24.js"
     },
     "config": {
         "token": "chuqq",

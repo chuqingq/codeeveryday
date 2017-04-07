@@ -17,6 +17,15 @@ process.on('uncaughtException', function(err) {
 
 var api = new weapi(config.appid, config.appsecret);
 
+// 设置菜单
+api.createMenu(config.menu, function(err, res) {
+  if (err) {
+    console.log('菜单设置失败：', err);
+  } else {
+    console.log('菜单设置成功');
+  }
+});
+
 var OAuth = require('wechat-oauth');
 var oauth = new OAuth(config.appid, config.appsecret);
 
