@@ -9,9 +9,6 @@ var fecha = require('fecha');
 
 var app = connect();
 
-var OAuth = require('wechat-oauth');
-var api = new OAuth('appid', 'secret');
-
 process.on('uncaughtException', function(err) {
     console.log('uncaughtException:', err);
 });
@@ -23,6 +20,9 @@ var config = {
 };
 
 var api = new weapi(config.appid, config.appsecret);
+
+var OAuth = require('wechat-oauth');
+var oauth = new OAuth(config.appid, config.appsecret);
 
 var collection;
 
@@ -59,13 +59,9 @@ mongodb.MongoClient.connect('mongodb://localhost:27017/weixin', function(err, db
         api.sendTemplate(doc.user, 'n3lQoXJNPH01DuVLkkeBajv0BIpJXUKAWQUSIbLYWHA', 'http://www.baidu.com', data, function(err, data, res) {
           if (err) {
             console.log('api.sendTemplate error: ', err, data, res);
-            return;
           }
-          // 标记为已处理
           collection.updateOne({_id: mongodb.ObjectId(doc._id)}, {'$set': {ishandled: true}}, function(err) {
-            if (err) {
-              console.log('collection.updateOne error:', err);
-            }
+            console.log('delete doc:', doc);
           });
         });
       });
@@ -80,6 +76,19 @@ app.use('/wechat', wechat(config, wechat.text(function(message, req, res, next) 
 }).voice(function(message, req, res, next) {
   console.log("/wechat voice:", message.Recognition);
   handleMsg(message.FromUserName, message.Recognition, res);
+}).event(function(message, req, res, next) {
+  console.log('/wechat event: ', message);
+  var msg = '';
+  if (message.EventKey == 'SETREMIND_10') {
+    msg = '10分钟后提醒我';
+  } else if (message.EventKey == 'SETREMIND_30') {
+    msg = '30分钟后提醒我';
+  } else if (message.EventKey == 'SETREMIND_60') {
+    msg = '60分钟后提醒我';
+  } else {
+    msg = '不支持的event: ' + message.EventKey;
+  }
+  handleMsg(message.FromUserName, msg, res);
 })));
 
 // text和voice均调此接口处理remind消息
@@ -95,7 +104,7 @@ function handleMsg(user, content, res) {
       console.log('api.semantic error: ', err, data, res2);
       // return;
     }
-    // console.log('semantic result: ', data);
+    console.log('semantic result: ', data);
 
     var datetime;
     if (err != null
@@ -114,7 +123,9 @@ function handleMsg(user, content, res) {
             return;
         }
     } else {
+        console.log('datetime: ', data.semantic.details.datetime);
         datetime = data.semantic.details.datetime.date + ' ' + data.semantic.details.datetime.time;
+        console.log('semantic datetime: ' + datetime);
     }
     var datetime2 = fecha.parse(datetime, 'YYYY-MM-DD HH:mm:ss');
     if (datetime2.toString() == 'Invalid Date') {
@@ -123,7 +134,7 @@ function handleMsg(user, content, res) {
     }
 
     if (datetime2 < new Date()) {
-      res.reply('Time is overdue\n' + fecha.format(new Date(), 'YYYY-MM-DD HH:mm:ss'));
+      res.reply('Time is overdue\n' + datetime + ' before ' + fecha.format(new Date(), 'YYYY-MM-DD HH:mm:ss'));
       return;
     }
 
@@ -137,20 +148,14 @@ function handleMsg(user, content, res) {
       }
 
       console.log('insert doc:', doc, '::', err);
-      // res.reply('Set timer success!\nTime: '+datetime+'\nContent: '+content);
-      var data = {
-          time: {value: fecha.format(doc.time, 'YYYY-MM-DD HH:mm:ss'), color: '#173177'},
-          content: {value: doc.content, color: '#173177'}
-      };
-      api.sendTemplate(doc.user, 'mdJtdCLMuntJhew0rwidriDszub7AQhDspB1JRL_kfI', 'http://www.baidu.com', data, function(err, data, res) {
-        if (err) {
-          console.log('api.sendTemplate settimer succ error: ', err, data, res);
-        }
-      });
+      res.reply('Set timer success!\nTime: '+datetime+'\nContent: '+content);
     });
   });
 }
 
+//app.use('/', function(req, res) {
+//  res.end('Hello World!');
+//});
 app.use('/remind/new', function(req, res) {
   console.log('/remind/new:'+req.query.code);
   oauth.getAccessToken(req.query.code, function(err, result) {
@@ -158,7 +163,6 @@ app.use('/remind/new', function(req, res) {
       console.log("getUser error: " + err);
     }
     console.log('getUser result: ' + JSON.stringify(result));
-    console.log('getUser openid: ' + result.data.openid);
   });
   console.log('query: '+ JSON.stringify(req.query));
   res.end('/remind/new');
@@ -171,6 +175,7 @@ app.use('/remind/get', function(req, res) {
   console.log('/remind/get:');
   res.end('/remind/get');
 });
+
 
 // 启动服务
 var server = app.listen(80, function() {
