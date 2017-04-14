@@ -1,48 +1,56 @@
 {
-    "name": "weixin-mp-remind",
-    "version": "0.2.4",
-    "description": "微信公众号提醒小工具",
-    "dependencies": {
-        "express": "^4.15.2",
-        "fecha": "^2.3.0",
-        "mongodb": "^2.2.24",
-        "wechat": "^2.1.0",
-        "wechat-api": "^1.32.0",
-        "wechat-oauth": "^1.2.1"
-    },
-    "scripts": {
-        "start": "screen -dmS weixin-mp-remind node weixin24.js"
-    },
-    "config": {
-        "token": "chuqq",
-        "appid": "wx0288bf03ed5da89b",
-        "appsecret": "d4624c36b6795d1d99dcf0547af5443d",
-        "menu": {
-            "button": [{
-                "name": "设置提醒",
-                "sub_button": [{
-                    "type": "click",
-                    "name": "10分钟后提醒我",
-                    "key": "SETREMIND_10"
-                }, {
-                    "type": "click",
-                    "name": "30分钟后提醒我",
-                    "key": "SETREMIND_30"
-                }, {
-                    "type": "click",
-                    "name": "60分钟后提醒我",
-                    "key": "SETREMIND_60"
-                }, {
-                    "type": "view",
-                    "name": "设置提醒",
-                    "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx0288bf03ed5da89b&redirect_uri=http%3a%2f%2f121.41.103.23%2fremind%2fnew&response_type=code&scope=snsapi_base&state=#wechat_redirect"
-                }]
-            }, {
-                "type": "view",
-                "name": "查看提醒",
-                "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx0288bf03ed5da89b&redirect_uri=http%3a%2f%2f121.41.103.23%2fremind%2fget&response_type=code&scope=snsapi_base&state=#wechat_redirect"
-            }]
+  "name": "weixin-mp-remind",
+  "version": "0.2.4",
+  "description": "微信公众号提醒小工具",
+  "dependencies": {
+    "express": "^4.15.2",
+    "fecha": "^2.3.0",
+    "log": "^1.4.0",
+    "mongodb": "^2.2.24",
+    "wechat": "^2.1.0",
+    "wechat-api": "^1.32.0",
+    "wechat-oauth": "^1.2.1"
+  },
+  "scripts": {
+    "start": "screen -dmS weixin-mp-remind node weixin24.js"
+  },
+  "config": {
+    "token": "chuqq",
+    "appid": "wx0288bf03ed5da89b",
+    "appsecret": "d4624c36b6795d1d99dcf0547af5443d",
+    "menu": {
+      "button": [
+        {
+          "name": "设置提醒",
+          "sub_button": [
+            {
+              "type": "click",
+              "name": "10分钟后提醒我",
+              "key": "SETREMIND_10"
+            },
+            {
+              "type": "click",
+              "name": "30分钟后提醒我",
+              "key": "SETREMIND_30"
+            },
+            {
+              "type": "click",
+              "name": "60分钟后提醒我",
+              "key": "SETREMIND_60"
+            },
+            {
+              "type": "view",
+              "name": "设置提醒",
+              "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx0288bf03ed5da89b&redirect_uri=http%3a%2f%2f121.41.103.23%2fremind%2fnew&response_type=code&scope=snsapi_base&state=#wechat_redirect"
+            }
+          ]
+        },
+        {
+          "type": "view",
+          "name": "查看提醒",
+          "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx0288bf03ed5da89b&redirect_uri=http%3a%2f%2f121.41.103.23%2fremind%2fget&response_type=code&scope=snsapi_base&state=#wechat_redirect"
         }
+      ]
     }
+  }
 }
-
