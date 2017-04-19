@@ -79,7 +79,7 @@ mongodb.MongoClient.connect('mongodb://localhost:27017/weixin', function(err, db
 });
 
 app.use(connect.query());
-app.use('/wechat', wechat(config, wechat.text(function(message, req, res, next) {
+app.use(config.urlprefix, wechat(config, wechat.text(function(message, req, res, next) {
   log.debug('/wechat text:', message.Content);
   handleMsg(message.FromUserName, message.Content, res);
 }).voice(function(message, req, res, next) {
@@ -189,7 +189,7 @@ app.use('/remind/get', function(req, res) {
 
 
 // 启动服务
-var server = app.listen(80, function() {
+var server = app.listen(config.listenport, function() {
   var host = server.address().address;
   var port = server.address().port;
 

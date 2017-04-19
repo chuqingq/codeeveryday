@@ -18,6 +18,8 @@
     "token": "chuqq",
     "appid": "wx0288bf03ed5da89b",
     "appsecret": "d4624c36b6795d1d99dcf0547af5443d",
+    "urlprefix": "/wechat",
+    "listenport": 80,
     "menu": {
       "button": [
         {
