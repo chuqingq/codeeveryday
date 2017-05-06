@@ -1,0 +1,60 @@
+# nexus5 factoryImage+recovery+root+xposed+shelldroid
+
+http://blog.csdn.net/u011303443/article/details/53733433
+
+## factoryImage
+
+* 下载factoryImage：https://developers.google.com/android/images
+* 按住音量下键和电源键，手机进入线刷模式（fastboot）
+* 执行flash-all
+
+## recovery
+
+* 下载twrp.img：https://twrp.me/devices/lgnexus5.html 可以用欧洲源，快一些
+* adb devices
+* adb reboot bootloader
+* fastboot flash recovery twrp.img
+* fastboot reboot
+
+## root
+
+* 下载supersu：https://download.chainfire.eu/1016/SuperSU/UPDATE-SuperSU-v2.79-20161211114519.zip
+* 进入recovery模式。首先进入fastboot（按住音量下键和电源键），之后通过音量上下键选择模式，电源键确定。
+* 通过recovery模式的install安装压缩包
+* 安装成功后，重启手机进入系统。此时可看见应用程序列表多出一个SuperSU的应用，可通过该应用管理root权限
+
+## xposed
+
+* 直接从shouji.baidu.com下载xposed-installer.apk
+* 在应用内安装最新的v87框架，重启手机
+（也可以通过recovery刷入xposed框架）
+
+## shelldroid
+
+* 下载shelldroid的预编译apk：
+* https://github.com/wuhx/shelldroid
+* https://github.com/wuhx/shelldroid/blob/master/target/android/output/shelldroid-debug.apk?raw=true
+* xposed框架会提示shelldroid模块未启用，勾选后重启手机
+* shelldroid的安装：http://xun.im/2016/05/30/shelldroid-on-nexus5x/
+* shelldroid实现原理：http://xun.im/2016/05/30/shelldroid-a-virtual-environments-for-android-apps/
+
+## 验证
+
+* 可以安装osbuild进行验证：shouji.baidu.com
+* 在shelldroid中设置model、brand和IMEI，启动virtual env，可以发现操作成功。
+
+
+# xposed-API使用
+
+* https://github.com/rovo89/XposedBridge/wiki/Using-the-Xposed-Framework-API
+* That makes it easy to reference it by simply adding a Gradle dependency in your app/build.gradle:
+```
+repositories {
+    jcenter();
+}
+
+dependencies {
+    provided 'de.robv.android.xposed:api:82'
+}
+```
+* 一个例子：https://my.oschina.net/wisedream/blog/471292
