@@ -65,7 +65,7 @@ mongodb.MongoClient.connect('mongodb://localhost:27017/weixin', function(err, db
             content: {value: doc.content, color: '#173177'}
         };
         // api.sendText(doc.user, doc.content, function(err, data, res) {
-        api.sendTemplate(doc.user, 'n3lQoXJNPH01DuVLkkeBajv0BIpJXUKAWQUSIbLYWHA', 'http://www.baidu.com', data, function(err, data, res) {
+        api.sendTemplate(doc.user, 'BCN7n5qe41QjX3-b13Z7ZBqfoGpE1UpePga8uY2CHEE', 'http://www.baidu.com', data, function(err, data, res) {
           if (err) {
             log.error('api.sendTemplate error: ', err, data, res);
           }
@@ -159,7 +159,7 @@ function handleMsg(user, content, res) {
       }
 
       log.debug('insert doc:', doc, '::', err);
-      res.reply('Set timer success!\nTime: '+datetime+'\nContent: '+content);
+      res.reply('提醒设置成功！\n时间：'+datetime+'\n内容：'+content);
     });
   });
 }
