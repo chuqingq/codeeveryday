@@ -1,136 +1,214 @@
 var process = require('process');
+
 var wechat = require('wechat');
 var weapi = require('wechat-api');
+
+var mongodb = require('mongodb');
 var connect = require('express');
+var fecha = require('fecha');
+
+var config = require('./package.json').config;
+
+var fs = require('fs')
+  , Log = require('log')
+  , log = new Log('debug', fs.createWriteStream(config.logfile));
+
 var app = connect();
 
 process.on('uncaughtException', function(err) {
-    console.log('uncaughtException:', err);
+    log.error('uncaughtException:', err);
 });
-
-var config = {
-  token: 'chuqq',
-  appid: 'wx0288bf03ed5da89b',
-  appsecret: 'd4624c36b6795d1d99dcf0547af5443d'
-  //encodingAESKey: 'encodinAESKey'
-};
 
 var api = new weapi(config.appid, config.appsecret);
 
+// 设置菜单
+api.createMenu(config.menu, function(err, res) {
+  if (err) {
+    log.error('菜单设置失败：', err);
+  } else {
+    log.info('菜单设置成功');
+  }
+});
+
+var OAuth = require('wechat-oauth');
+var oauth = new OAuth(config.appid, config.appsecret);
+
+var collection;
+
+// 打开mongo，并删除已超期的任务
+mongodb.MongoClient.connect('mongodb://localhost:27017/weixin', function(err, db) {
+  if (err) {
+    log.error('mongodb.MongoClient.connect error:', err);
+    return;
+  }
+  log.info("MongoClient.connect success");
+
+  collection = db.collection('remind');
+  if (!collection) {
+    log.error('db.collection("remind") error: collection is null');
+    return;
+  }
+
+  // 每10秒，遍历mongo中过期的数据，并发送提醒
+  setInterval(function() {
+    // console.log('setInterval')
+    collection.find({time: {$lt: new Date()}, ishandled: false}).toArray(function(err, docs) {
+      if (err) {
+        log.error('collection.find.toArray error:', err);
+        return;
+      }
+      // console.log('docs:', docs);
+      docs.forEach(function(doc) {
+        log.info('send doc:', doc);
+        var data = {
+            time: {value: fecha.format(doc.time, 'YYYY-MM-DD HH:mm:ss'), color: '#173177'},
+            content: {value: doc.content, color: '#173177'}
+        };
+        // api.sendText(doc.user, doc.content, function(err, data, res) {
+        api.sendTemplate(doc.user, 'BCN7n5qe41QjX3-b13Z7ZBqfoGpE1UpePga8uY2CHEE', 'http://www.baidu.com', data, function(err, data, res) {
+          if (err) {
+            log.error('api.sendTemplate error: ', err, data, res);
+          }
+          collection.updateOne({_id: mongodb.ObjectId(doc._id)}, {'$set': {ishandled: true}}, function(err) {
+            log.debug('delete doc:', doc);
+          });
+        });
+      });
+    });
+  }, 10*1000);
+});
+
 app.use(connect.query());
-app.use('/wechat', wechat(config, wechat.text(function(message, req, res, next) {
-  console.log('/wechat text:', message.Content);
-  handleMsg(message.Content, message.FromUserName, res);
-  return;
-  /*
-  // 回复屌丝(普通回复)
-  res.reply('hehe');
-  //你也可以这样回复text类型的信息
-  res.reply({
-    content: 'text object',
-    type: 'text'
-  });
-  // 回复一段音乐
-  res.reply({
-    type: "music",
-    content: {
-      title: "来段音乐吧",
-      description: "一无所有",
-      musicUrl: "http://mp3.com/xx.mp3",
-      hqMusicUrl: "http://mp3.com/xx.mp3"
-      //thumbMediaId: "thisThumbMediaId"
-    }
-  });
-  // 回复高富帅(图文回复)
-  res.reply([
-    {
-      title: '你来我家接我吧',
-      description: '这是女神与高富帅之间的对话',
-      picurl: 'http://nodeapi.cloudfoundry.com/qrcode.jpg',
-      url: 'http://nodeapi.cloudfoundry.com/'
-    }
-  ]);
-  }*/
+app.use(config.urlprefix, wechat(config, wechat.text(function(message, req, res, next) {
+  log.debug('/wechat text:', message.Content);
+  handleMsg(message.FromUserName, message.Content, res);
 }).voice(function(message, req, res, next) {
-  console.log("/wechat voice:", message.Recognition);
-  handleMsg(message.Recognition, message.FromUserName, res);
+  log.debug("/wechat voice:", message.Recognition);
+  handleMsg(message.FromUserName, message.Recognition, res);
+}).event(function(message, req, res, next) {
+  log.debug('/wechat event: ', message);
+  if (message.Event != 'CLICK') {
+    log.debug('not expected event: ', message.Event);
+    return;
+  }
+  var match = message.EventKey.match(/^SETREMIND_([0-9]+)$/)
+  if (!res) {
+    log.warn('非预期的eventkey: ', message.EventKey);
+    res.reply('非预期的eventkey: ' + message.EventKey)
+    return;
+  }
+  var msg = match[1] + '分钟后提醒我';
+  log.debug('msg: ' + msg);
+  handleMsg(message.FromUserName, msg, res);
 })));
 
+// text和voice均调此接口处理remind消息
+function handleMsg(user, content, res) {
+  if (content.indexOf('提醒') != -1) {
+    var opts = {
+      "query": content,
+      "city": "南京",
+      "category": "remind"
+    };
 
-function handleMsg(content, user, res) {
-  var opts = {
-    "query":content,
-    "city":"南京",
-    "category": "remind"
-  };
+    api.semantic(user, opts, function(err, data, res2) {
+      if (err) {
+        log.error('api.semantic error: ', err, data, res2);
+        // return;
+      }
+      // log.debug('semantic result: ', data);
 
-  api.semantic(user, opts, function(err, data, res2) {
-    console.log('semantic result: ', data);
-    if (err != null
-      || data == undefined
-      || data.semantic == undefined
-      || data.semantic.details == undefined
-      || data.semantic.details.datetime == undefined) {
-        res.reply('error: ' + err + '.\n' + content);
-        return;
-    }
-    var datetime = data.semantic.details.datetime.date + ' ' + data.semantic.details.datetime.time;
-    // res.reply("定时成功: "+ datetime + "\n" + message.Recognition);
-
-    // 定时
-      var timeA = parseDate(datetime);
-      if (!timeA) {
-        res.reply('时间格式非法');
+      var datetime;
+      if (err != null
+        || data == undefined
+        || data.semantic == undefined
+        || data.semantic.details == undefined
+        || data.semantic.details.datetime == undefined) {
+          log.error('semantic error: ' + err + '.\n' + content);
+          var array = content.split(' ', 3);
+          if (array.length == 3) {
+              datetime = array[0] + ' ' + array[1];
+          } else if (array.length == 2) {
+              datetime = array[0];
+          } else {
+              res.reply('未识别时间\n' + fecha.format(new Date(), 'YYYY-MM-DD HH:mm:ss'));
+              return;
+          }
+      } else {
+          // log.debug('datetime: ', data.semantic.details.datetime);
+          datetime = data.semantic.details.datetime.date + ' ' + data.semantic.details.datetime.time;
+          // log.debug('semantic datetime: ' + datetime);
+      }
+      var datetime2 = fecha.parse(datetime, 'YYYY-MM-DD HH:mm:ss');
+      if (datetime2.toString() == 'Invalid Date') {
+        res.reply('Time is invalid format\n' + fecha.format(new Date(), 'YYYY-MM-DD HH:mm:ss'));
         return;
       }
-      var timeout = timeA.getTime() - new Date().getTime();
-      if (timeout <= 0) {
-        res.reply('时间已过期');
+
+      if (datetime2 < new Date()) {
+        res.reply('Time is overdue\n' + datetime + ' before ' + fecha.format(new Date(), 'YYYY-MM-DD HH:mm:ss'));
         return;
       }
-      setTimeout(function() {
-        api.sendText(user, content, function(err, data, res) {
-          console.log('err:', err);
-          console.log('data:', data);
-          console.log('res:', res);
-        });
-      }, timeout);
-      res.reply('定时提醒成功：\n'+datetime+'\n'+content);
-  });
-}
 
-/*  
-  将String类型解析为Date类型.  
-  parseDate('2006-1-1') return new Date(2006,0,1)  
-  parseDate(' 2006-1-1 ') return new Date(2006,0,1)  
-  parseDate('2006-1-1 15:14:16') return new Date(2006,0,1,15,14,16)  
-  parseDate(' 2006-1-1 15:14:16 ') return new Date(2006,0,1,15,14,16);  
-  parseDate('2006-1-1 15:14:16.254') return new Date(2006,0,1,15,14,16,254)  
-  parseDate(' 2006-1-1 15:14:16.254 ') return new Date(2006,0,1,15,14,16,254)  
-  parseDate('不正确的格式') retrun null  
-*/
-function parseDate(str){
-  if(typeof str == 'string'){
-    // var results = str.match(/^ *(\d{4})-(\d{1,2})-(\d{1,2}) */);   
-    // if(results && results.length>3)   
-    //   return new Date(parseInt(results[1]),parseInt(results[2]) -1,parseInt(results[3]));    
-    var results = str.match(/^ *(\d{4})-(\d{1,2})-(\d{1,2}) +(\d{1,2}):(\d{1,2}):(\d{1,2}) */);
-    if(results && results.length>6)
-      return new Date(parseInt(results[1]),parseInt(results[2]) -1,parseInt(results[3]),parseInt(results[4]),parseInt(results[5]),parseInt(results[6]));
-    // results = str.match(/^ *(\d{4})-(\d{1,2})-(\d{1,2}) +(\d{1,2}):(\d{1,2}):(\d{1,2})\.(\d{1,9}) */);   
-    // if(results && results.length>7)   
-    //   return new Date(parseInt(results[1]),parseInt(results[2]) -1,parseInt(results[3]),parseInt(results[4]),parseInt(results[5]),parseInt(results[6]),parseInt(results[7]));    
+      // 插入数据库中
+      var doc = {time: datetime2, user: user, content: content, ishandled: false};
+      collection.insert(doc, function(err) {
+        if (err) {
+          log.error('collection.insert error: ', err);
+          res.reply('Server error: ' + err);
+          return;
+        }
+
+        log.debug('insert doc:', doc, '::', err);
+        res.reply('提醒设置成功！\n时间：'+datetime+'\n内容：'+content);
+      });
+    });
   }
-  return null;
+  else if (content.indexOf('天气') != -1) {
+    log.debug('weather: ');
+    var opts = {
+      "query": content,
+      "category": "weather"
+    };
+
+    api.semantic(user, opts, function(err, data, res2) {
+      log.debug('天气 data: ', data);
+    });
+  }
+  else {
+    res.reply('未识别分类');
+  }
 }
+
+//app.use('/', function(req, res) {
+//  res.end('Hello World!');
+//});
+app.use('/remind/new', function(req, res) {
+  log.debug('/remind/new:'+req.query.code);
+  oauth.getAccessToken(req.query.code, function(err, result) {
+    if (err) {
+      log.error("getUser error: " + err);
+    }
+    log.debug('getUser result: ' + JSON.stringify(result));
+  });
+  log.debug('query: '+ JSON.stringify(req.query));
+  res.end('/remind/new');
+});
+app.use('/remind/save', function(req, res) {
+  log.debug('/remind/save:');
+  res.end('/remind/save');
+});
+app.use('/remind/get', function(req, res) {
+  log.debug('/remind/get:');
+  res.end('/remind/get');
+});
 
 
 // 启动服务
-
-var server = app.listen(80, function() {
+var server = app.listen(config.listenport, function() {
   var host = server.address().address;
   var port = server.address().port;
 
-  console.log('weixin app listening at http://%s:%s', host, port);
+  log.info('weixin app listening at http://%s:%s', host, port);
 });
 

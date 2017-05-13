@@ -12,14 +12,15 @@
     "wechat-oauth": "^1.2.1"
   },
   "scripts": {
-    "start": "screen -dmS weixin-mp-remind node weixin24.js"
+    "start": "screen -dmS weixin-mp-remind node weixin.js"
   },
   "config": {
+    "logfile": "remind.log",
+    "urlprefix": "/wechat",
+    "listenport": 8001,
     "token": "chuqq",
     "appid": "wx0288bf03ed5da89b",
     "appsecret": "d4624c36b6795d1d99dcf0547af5443d",
-    "urlprefix": "/wechat",
-    "listenport": 8001,
     "menu": {
       "button": [
         {
