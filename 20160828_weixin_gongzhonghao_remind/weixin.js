@@ -168,6 +168,7 @@ function handleMsg(user, content, res) {
     log.debug('weather: ');
     var opts = {
       "query": content,
+      "city": '南京',
       "category": "weather"
     };
 
