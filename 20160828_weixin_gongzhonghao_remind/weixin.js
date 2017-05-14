@@ -78,6 +78,7 @@ mongodb.MongoClient.connect('mongodb://localhost:27017/weixin', function(err, db
   }, 10*1000);
 });
 
+
 app.use(connect.query());
 app.use(config.urlprefix, wechat(config, wechat.text(function(message, req, res, next) {
   log.debug('/wechat text:', message.Content);
@@ -102,84 +103,88 @@ app.use(config.urlprefix, wechat(config, wechat.text(function(message, req, res,
   handleMsg(message.FromUserName, msg, res);
 })));
 
+
+
+// 处理业务逻辑
+
+// 处理提醒
+function handleRemind(user, res, data) {
+  var datetime;
+  if (data == undefined
+    || data.semantic == undefined
+    || data.semantic.details == undefined
+    || data.semantic.details.datetime == undefined) {
+      // log.error('semantic error: ' + err + '.\n' + content);
+      var array = data.query.split(' ', 3);
+      if (array.length == 3) {
+          datetime = array[0] + ' ' + array[1];
+      } else if (array.length == 2) {
+          datetime = array[0];
+      } else {
+          res.reply('未识别时间\n' + fecha.format(new Date(), 'YYYY-MM-DD HH:mm:ss'));
+          return;
+      }
+  } else {
+      // log.debug('datetime: ', data.semantic.details.datetime);
+      datetime = data.semantic.details.datetime.date + ' ' + data.semantic.details.datetime.time;
+      // log.debug('semantic datetime: ' + datetime);
+  }
+  var datetime2 = fecha.parse(datetime, 'YYYY-MM-DD HH:mm:ss');
+  if (datetime2.toString() == 'Invalid Date') {
+    res.reply('Time is invalid format\n' + fecha.format(new Date(), 'YYYY-MM-DD HH:mm:ss'));
+    return;
+  }
+
+  if (datetime2 < new Date()) {
+    res.reply('Time is overdue\n' + datetime + ' before ' + fecha.format(new Date(), 'YYYY-MM-DD HH:mm:ss'));
+    return;
+  }
+
+  // 插入数据库中
+  var doc = {time: datetime2, user: user, content: data.query, ishandled: false};
+  collection.insert(doc, function(err) {
+    if (err) {
+      log.error('collection.insert error: ', err);
+      res.reply('Server error: ' + err);
+      return;
+    }
+
+    log.debug('insert doc:', doc, '::', err);
+    res.reply('提醒设置成功！\n时间：'+datetime+'\n内容：'+data.query);
+  });
+}
+
+function handleDefault(user, res, data) {
+  log.debug('handleDefault: ', data);
+  res.reply(JSON.stringify(data, null, '  '));
+}
+
+
 // text和voice均调此接口处理remind消息
 function handleMsg(user, content, res) {
-  if (content.indexOf('提醒') != -1) {
-    var opts = {
-      "query": content,
-      "city": "南京",
-      "category": "remind"
-    };
+  log.debug('handleMsg: ' + content);
+  var opts = {
+    "query": content,
+    "city": '南京',
+    "category": "weather,remind,telephone,baike,news,instruction,app,website,search"
+  };
 
-    api.semantic(user, opts, function(err, data, res2) {
-      if (err) {
-        log.error('api.semantic error: ', err, data, res2);
-        // return;
-      }
-      // log.debug('semantic result: ', data);
-
-      var datetime;
-      if (err != null
-        || data == undefined
-        || data.semantic == undefined
-        || data.semantic.details == undefined
-        || data.semantic.details.datetime == undefined) {
-          log.error('semantic error: ' + err + '.\n' + content);
-          var array = content.split(' ', 3);
-          if (array.length == 3) {
-              datetime = array[0] + ' ' + array[1];
-          } else if (array.length == 2) {
-              datetime = array[0];
-          } else {
-              res.reply('未识别时间\n' + fecha.format(new Date(), 'YYYY-MM-DD HH:mm:ss'));
-              return;
-          }
-      } else {
-          // log.debug('datetime: ', data.semantic.details.datetime);
-          datetime = data.semantic.details.datetime.date + ' ' + data.semantic.details.datetime.time;
-          // log.debug('semantic datetime: ' + datetime);
-      }
-      var datetime2 = fecha.parse(datetime, 'YYYY-MM-DD HH:mm:ss');
-      if (datetime2.toString() == 'Invalid Date') {
-        res.reply('Time is invalid format\n' + fecha.format(new Date(), 'YYYY-MM-DD HH:mm:ss'));
-        return;
-      }
-
-      if (datetime2 < new Date()) {
-        res.reply('Time is overdue\n' + datetime + ' before ' + fecha.format(new Date(), 'YYYY-MM-DD HH:mm:ss'));
-        return;
-      }
-
-      // 插入数据库中
-      var doc = {time: datetime2, user: user, content: content, ishandled: false};
-      collection.insert(doc, function(err) {
-        if (err) {
-          log.error('collection.insert error: ', err);
-          res.reply('Server error: ' + err);
-          return;
-        }
-
-        log.debug('insert doc:', doc, '::', err);
-        res.reply('提醒设置成功！\n时间：'+datetime+'\n内容：'+content);
-      });
-    });
-  }
-  else if (content.indexOf('天气') != -1) {
-    log.debug('weather: ');
-    var opts = {
-      "query": content,
-      "city": '南京',
-      "category": "weather"
-    };
-
-    api.semantic(user, opts, function(err, data, res2) {
-      log.debug('天气 data: ', data);
-    });
-  }
-  else {
-    res.reply('未识别分类');
-  }
+  api.semantic(user, opts, function(err, data, res2) {
+    log.debug('api.semantic data: ', data);
+    switch(data.type) {
+      case 'remind':
+        handleRemind(user, res, data);
+        break;
+      case 'weather':
+        handleDefault(user, res, data);
+        break;
+      default:
+        log.debug('default category');
+        handleDefault(user, res, data);
+    }
+  });
 }
+
 
 //app.use('/', function(req, res) {
 //  res.end('Hello World!');
