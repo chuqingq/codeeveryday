@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+from urllib import request
+import json
+import base64
+
 from pyaudio import PyAudio, paInt16 
 import numpy as np 
 from datetime import datetime 
@@ -14,7 +18,41 @@ def save_wave_file(filename, data):
     wf.writeframes(b"".join(data)) 
     wf.close() 
 
-
+# 把音频文件发到百度语音
+def baidu_yuyin(filename):
+    cuid = "5415587"
+    apiKey = "UPKOHCZhfTNMEI9B1Xnf5PRK"
+    secretKey = "GYHsMLE820jkw1cBGnNbIzoeVVxdDUfs"
+    auth_url = "https://openapi.baidu.com/oauth/2.0/token?grant_type=client_credentials&client_id="+apiKey+"&client_secret="+secretKey;
+    response = request.urlopen(auth_url)
+    response = json.loads(response.read())
+    token = response['access_token']
+    print('token: ' + token)
+    # 读取文件内容
+    content = open('./'+filename, 'rb').read() 
+    # base64编码
+    base_data = base64.b64encode(content)
+    # 请求体
+    array = {
+        "format": "wav",
+        "rate": 8000,
+        "channel": 1,
+        # "lan" => "zh",
+        "token": token,
+        "cuid": cuid,
+        # "url" => "http://www.xxx.com/sample.pcm",
+        # "callback" => "http://www.xxx.com/audio/callback",
+        "len": len(content),
+        "speech": bytes.decode(base_data)
+    }
+    body = json.dumps(array)
+    # contentLength = 'ContentLength: ' + len(body)
+    # 发送语音识别请求
+    url = "http://vop.baidu.com/server_api"
+    req = request.Request(url=url, data=str.encode(body), method='POST')
+    response = request.urlopen(req)
+    response = json.loads(response.read())
+    print('response: ', response)
 
 NUM_SAMPLES = 2000      # pyAudio内部缓存的块的大小
 SAMPLING_RATE = 8000    # 取样频率
@@ -57,3 +95,13 @@ while True:
             save_wave_file(filename, save_buffer) 
             save_buffer = [] 
             print(filename, "saved")
+            # 语音识别
+            baidu_yuyin(filename)
+
+# response:  {'corpus_no': '6419959540086987308', 'err_msg': 'success.', 'err_no': 0, 'result': ['娄底好，'], 'sn': '54834668321494763311'}
+# Traceback (most recent call last):
+#   File "php/chuqq_sample.py", line 73, in <module>
+#     string_audio_data = stream.read(NUM_SAMPLES)
+#   File "/usr/local/lib/python3.6/site-packages/pyaudio.py", line 608, in read
+#     return pa.read_stream(self._stream, num_frames, exception_on_overflow)
+# OSError: [Errno -9981] Input overflowed
