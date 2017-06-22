@@ -1,0 +1,20 @@
+/home/chuqq/temp/codeeveryday/shell/20170622_logrotate/a.log {
+       rotate 30
+       daily
+       dateext
+       copytruncate
+       notifempty
+       missingok
+       su chuqq chuqq
+}
+
+/home/chuqq/temp/codeeveryday/shell/20170622_logrotate/b.log {
+       rotate 30
+       daily
+       dateext
+       copytruncate
+       notifempty
+       missingok
+       su chuqq chuqq
+}
+
