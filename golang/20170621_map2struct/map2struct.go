@@ -7,22 +7,12 @@ import (
 	"reflect"
 	"runtime"
 	"strconv"
+
+	"./mypackage"
 )
 
-type myConfig struct {
-	ListenIP   string `cfg:"listenip"`
-	ListenPort int    `cfg:"listenport"`
-	Keepalive  struct {
-		Idle  int `cfg:"idle"`
-		Count int `cfg:"count"`
-		Abc   struct {
-			AbcValue string `cfg:"abcvalue"`
-		} `cfg:"abc"`
-	} `cfg:"keepalive"`
-}
-
 func main() {
-	cfg := &myConfig{}
+	cfg := &mypackage.MyConfig{}
 	values := map[string]string{
 		"listenip":               "127.0.0.1",
 		"listenport":             "1234",
@@ -31,8 +21,8 @@ func main() {
 		"keepalive/abc/abcvalue": "abcvalue",
 	}
 
-	Unmarshal(values, cfg)
-	fmt.Printf("cfg: %+v\n", cfg)
+	err := Unmarshal(values, cfg)
+	fmt.Printf("cfg: %+v, err: %v\n", cfg, err)
 }
 
 const defaultTag = "cfg"
@@ -41,9 +31,14 @@ func Unmarshal(values map[string]string, v interface{}) (err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			if _, ok := r.(runtime.Error); ok {
+				fmt.Printf("runtime.Error panic\n")
 				panic(r)
 			}
-			err = r.(error)
+			if err2, ok := r.(error); ok {
+				err = err2
+			} else {
+				err = errors.New(r.(string))
+			}
 		}
 	}()
 
@@ -57,21 +52,25 @@ func Unmarshal(values map[string]string, v interface{}) (err error) {
 		return errors.New(fmt.Sprintf("only accept struct; got %T", v))
 	}
 
-	return setValue("", values, &rv)
+	return setValue("", values, rv)
 }
 
-func setValue(prefix string, values map[string]string, value *reflect.Value) (err error) {
-	fmt.Printf("value prefix: %v\n", prefix)
+func setValue(prefix string, values map[string]string, value reflect.Value) (err error) {
+	fmt.Printf("value prefix: %v, %v\n", prefix, value.IsValid())
 	tv := value.Type()
 	for i := 0; i < value.NumField(); i++ {
 		if tagv := tv.Field(i).Tag.Get(defaultTag); tagv != "" {
 			fmt.Printf("tagv: %v\n", tagv)
 			field := value.Field(i)
+			fmt.Printf("field kind: %v\n", field.Kind())
 			if field.Kind() == reflect.Struct {
-				if err := setValue(prefix+tagv+"/", values, &field); err != nil {
+				if err := setValue(prefix+tagv+"/", values, field); err != nil {
 					return err
 				}
 			} else {
+				if !field.CanSet() {
+					continue
+				}
 				key := prefix + tagv
 				value, ok := values[key]
 				if !ok {
@@ -94,16 +93,3 @@ func setValue(prefix string, values map[string]string, value *reflect.Value) (er
 	return nil
 }
 
-// func ConvertConfig(values map[string]interface{}, cfg interface{}) error {
-// 	jsonBytes, err := json.Marshal(values)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	err = json.Unmarshal(jsonBytes, cfg)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	return nil
-// }
