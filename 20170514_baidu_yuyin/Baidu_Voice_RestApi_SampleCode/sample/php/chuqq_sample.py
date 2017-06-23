@@ -85,6 +85,7 @@ while True:
     # stream.stop_stream()
     # 将读入的数据转换为数组
     audio_data = np.fromstring(string_audio_data, dtype=np.short)
+    print(audio_data, type(audio_data))
     # 计算大于LEVEL的取样的个数
     large_sample_count = np.sum( audio_data > LEVEL )
     # print(np.max(audio_data))
