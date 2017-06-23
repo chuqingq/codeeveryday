@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>html5 history sample</title>
+</head>
+<body>
+
+    <a id="a1">a1</a>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <a id="a2">a2</a>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <a id="a3">a3</a>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <a id="a4">a4</a>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+
+    <script src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            $('#a1').click(function() {
+                history.pushState({}, 'title123', '#a1');
+            });
+
+            $('#a2').click(function() {
+                history.pushState({}, 'title123', '#a2');
+            });
+
+            $('#a3').click(function() {
+                history.pushState({}, 'title123', '#a3');
+            });
+
+            $('#a4').click(function() {
+                history.pushState({}, 'title123', '#a4');
+            });
+        });
+    </script>
+</body>
+</html>
