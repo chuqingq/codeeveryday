@@ -6,7 +6,8 @@ import (
 )
 
 func HandleFunc(res http.ResponseWriter, req * http.Request) {
-    fmt.Fprint(res, "hello world")
+    // fmt.Fprint(res, "hello world")
+    res.Write([]byte("hello world"))
 }
 
 func main() {
