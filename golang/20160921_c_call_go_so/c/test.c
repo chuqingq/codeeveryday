@@ -1,5 +1,5 @@
 #include<stdio.h>
-#include"lib.h"
+#include"libmy.h"
 
 int main() {
     GoString gs = Hello();
