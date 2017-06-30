@@ -1,0 +1,112 @@
+chuqq@chuqq-hp:~$ ab -c 100 -n 10000  http://127.0.0.1:55555/
+This is ApacheBench, Version 2.3 <$Revision: 1706008 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient)
+Completed 1000 requests
+Completed 2000 requests
+Completed 3000 requests
+Completed 4000 requests
+Completed 5000 requests
+Completed 6000 requests
+Completed 7000 requests
+Completed 8000 requests
+Completed 9000 requests
+Completed 10000 requests
+Finished 10000 requests
+
+
+Server Software:        
+Server Hostname:        127.0.0.1
+Server Port:            55555
+
+Document Path:          /
+Document Length:        3 bytes
+
+Concurrency Level:      100
+Time taken for tests:   0.640 seconds
+Complete requests:      10000
+Failed requests:        0
+Total transferred:      1190000 bytes
+HTML transferred:       30000 bytes
+Requests per second:    15624.51 [#/sec] (mean)
+Time per request:       6.400 [ms] (mean)
+Time per request:       0.064 [ms] (mean, across all concurrent requests)
+Transfer rate:          1815.74 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    1   0.8      1       6
+Processing:     0    5   2.1      5      23
+Waiting:        0    4   2.0      4      21
+Total:          0    6   2.1      6      26
+
+Percentage of the requests served within a certain time (ms)
+  50%      6
+  66%      7
+  75%      7
+  80%      8
+  90%      9
+  95%     10
+  98%     12
+  99%     13
+ 100%     26 (longest request)
+chuqq@chuqq-hp:~$ ab -k -c 100 -n 10000  http://127.0.0.1:55555/
+This is ApacheBench, Version 2.3 <$Revision: 1706008 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 127.0.0.1 (be patient)
+Completed 1000 requests
+Completed 2000 requests
+Completed 3000 requests
+Completed 4000 requests
+Completed 5000 requests
+Completed 6000 requests
+Completed 7000 requests
+Completed 8000 requests
+Completed 9000 requests
+Completed 10000 requests
+Finished 10000 requests
+
+
+Server Software:        
+Server Hostname:        127.0.0.1
+Server Port:            55555
+
+Document Path:          /
+Document Length:        3 bytes
+
+Concurrency Level:      100
+Time taken for tests:   0.411 seconds
+Complete requests:      10000
+Failed requests:        0
+Keep-Alive requests:    10000
+Total transferred:      1430000 bytes
+HTML transferred:       30000 bytes
+Requests per second:    24349.74 [#/sec] (mean)
+Time per request:       4.107 [ms] (mean)
+Time per request:       0.041 [ms] (mean, across all concurrent requests)
+Transfer rate:          3400.40 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.4      0       5
+Processing:     0    4   1.5      4      13
+Waiting:        0    4   1.5      4      13
+Total:          0    4   1.6      4      16
+
+Percentage of the requests served within a certain time (ms)
+  50%      4
+  66%      4
+  75%      5
+  80%      5
+  90%      6
+  95%      7
+  98%      9
+  99%     10
+ 100%     16 (longest request)
+
+ 普通的http服务，长连接，11w TPS。
+ 
