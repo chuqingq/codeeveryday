@@ -3,22 +3,34 @@
 #include <atomic>
 #include <thread>
 #include <assert.h>
+
 std::atomic<bool> x,y;
 std::atomic<int> z;
+
 void write_x()
-{x.store(true,std::memory_order_seq_cst); } // 1
+{
+  x.store(true,std::memory_order_seq_cst);
+} // 1
+
 void write_y()
-{  y.store(true,std::memory_order_seq_cst);}  // 2
+{
+  y.store(true,std::memory_order_seq_cst);
+}  // 2
+
 void read_x_then_y()
 {
   while(!x.load(std::memory_order_seq_cst));
   if(y.load(std::memory_order_seq_cst))  // 3
-++z; }
+    ++z;
+}
+
 void read_y_then_x()
 {
   while(!y.load(std::memory_order_seq_cst));
   if(x.load(std::memory_order_seq_cst))  // 4
-++z; }
+    ++z;
+}
+
 int main() {
   x=false;
   y=false;
