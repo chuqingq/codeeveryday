@@ -108,5 +108,6 @@ Percentage of the requests served within a certain time (ms)
   99%     10
  100%     16 (longest request)
 
- 普通的http服务，长连接，11w TPS。
+增加一次grpc的http服务，长连接，2.4w TPS。
+普通的http服务，长连接，11w TPS。
  
