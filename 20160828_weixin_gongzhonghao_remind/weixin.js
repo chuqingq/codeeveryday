@@ -87,11 +87,12 @@ app.use(config.urlprefix, wechat(config, wechat.text(function(message, req, res,
   log.debug("/wechat voice:", message.Recognition);
   handleMsg(message.FromUserName, message.Recognition, res);
 }).event(function(message, req, res, next) {
-  log.debug('/wechat event: ', message);
   if (message.Event != 'CLICK') {
     log.debug('not expected event: ', message.Event);
     return;
   }
+
+  log.debug('/wechat event: ', message);
   var match = message.EventKey.match(/^SETREMIND_([0-9]+)$/)
   if (!res) {
     log.warn('非预期的eventkey: ', message.EventKey);
@@ -186,9 +187,9 @@ function handleMsg(user, content, res) {
 }
 
 
-//app.use('/', function(req, res) {
-//  res.end('Hello World!');
-//});
+app.use('/hello', function(req, res) {
+  res.end('Hello World!');
+});
 app.use('/remind/new', function(req, res) {
   log.debug('/remind/new:'+req.query.code);
   oauth.getAccessToken(req.query.code, function(err, result) {
@@ -206,7 +207,22 @@ app.use('/remind/save', function(req, res) {
 });
 app.use('/remind/get', function(req, res) {
   log.debug('/remind/get:');
-  res.end('/remind/get');
+  oauth.getAccessToken(req.query.code, function(err, result) {
+    if (err) {
+      log.error("getUser error: " + err);
+      return;
+    }
+    log.debug('getUser result: ' + JSON.stringify(result));
+    // 查询未处理的事项
+    collection.find({ishandled: false, user: result.data.openid}).toArray(function(err, docs) {
+      if (err) {
+        log.error('collection.find.toArray error: ', err);
+        res.end('collection.find.toArray error');
+        return;
+      }
+      res.end(JSON.stringify(docs, null, ' '));
+    });
+  });
 });
 
 
@@ -217,4 +233,5 @@ var server = app.listen(config.listenport, function() {
 
   log.info('weixin app listening at http://%s:%s', host, port);
 });
+
 
