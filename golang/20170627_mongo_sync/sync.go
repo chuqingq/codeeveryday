@@ -211,10 +211,12 @@ func (config *Config) applyOps() error {
 	var applyOpsResponse ApplyOpsResponse
 	err := config.DstSess.Run(bson.M{"applyOps": config.OpsToApply}, &applyOpsResponse)
 	if err != nil {
+		log.Printf("applyOps error: %v", err)
 		return err
 	}
 
 	if !applyOpsResponse.Ok {
+		log.Printf("server gave error appplying ops: %v", applyOpsResponse.ErrMsg)
 		return fmt.Errorf("server gave error applying ops: %v", applyOpsResponse.ErrMsg)
 	}
 
