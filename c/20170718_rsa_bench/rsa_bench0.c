@@ -26,6 +26,7 @@ RSA* rsa_load_privatekey(const char *path) {
     BIO_read_filename( bp, path );
 
     RSA *rsa = PEM_read_bio_RSAPrivateKey(bp, NULL, NULL, NULL);
+    BIO_free(bp);
     if (rsa == NULL) {
         printf("PEM_read_bio_RSAPrivateKey error\n");
         return NULL;
