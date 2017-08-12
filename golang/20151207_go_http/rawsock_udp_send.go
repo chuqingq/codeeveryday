@@ -1,5 +1,9 @@
 package main
 
+/*
+echo server by udp for rawsocket
+*/
+
 import (
 	"log"
 	"net"
@@ -23,14 +27,12 @@ func main() {
 			log.Printf("ReadFrom error: %v\n", err)
 		}
 
-		// if addr.String() != "192.168.23.72" {
-		// 	continue
-		// }
-
 		if addr.String() != "127.0.0.1" {
 			continue
-			log.Printf("ReadFrom %v\n", addr)
 		}
+		log.Printf("recv from ip: %v", addr.String())
+
+		ipaddr, _ := net.ResolveIPAddr(addr.Network(), addr.String())
 
 		reqPacket := gopacket.NewPacket(buf[:n], layers.LayerTypeUDP, gopacket.Default)
 		udpLayer := reqPacket.Layer(layers.LayerTypeUDP)
@@ -39,12 +41,38 @@ func main() {
 			continue
 		}
 		req := udpLayer.(*layers.UDP)
-		
-		// 计算目的端端口
-		dstPort := uint16(buf[2])*256+uint16(buf[3])
-		log.Printf("ReadFrom %v, dstport: %v, %v\n", addr, dstPort, string(buf[8:n]))
-		if dstPort != 12345 {
+
+		log.Printf("recv udp port: %v -> %v", req.SrcPort, req.DstPort)
+		if req.DstPort != 12345 {
 			continue
+		}
+		
+		// Our IP header... not used, but necessary for TCP checksumming.
+		ip := &layers.IPv4{
+			SrcIP:    ipaddr.IP, // TODO
+			DstIP:    ipaddr.IP,
+			Protocol: layers.IPProtocolTCP,
+		}
+
+		res := &layers.UDP{
+			SrcPort: req.DstPort,
+			DstPort: req.SrcPort,
+		}
+		res.SetNetworkLayerForChecksum(ip)
+
+		// response
+		buf := gopacket.NewSerializeBuffer()
+		opts := gopacket.SerializeOptions{
+			ComputeChecksums: true,
+			FixLengths:       true,
+		}
+		if err := gopacket.SerializeLayers(buf, opts, res, gopacket.Payload("response\r")); err != nil {
+			log.Fatal(err)
+		}
+
+
+		if _, err := conn.WriteTo(buf.Bytes(), ipaddr); err != nil {
+			log.Fatal(err)
 		}
 		/*
 		// 交换源端和目的端端口
