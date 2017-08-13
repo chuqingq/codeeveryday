@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	conn, err := net.ListenPacket("ip4:udp", "0.0.0.0")
+	conn, err := net.ListenPacket("ip4:udp", "127.0.0.1")
 	if err != nil {
 		log.Fatalf("ListenPacket error: %v\n", err)
 	}
@@ -46,7 +46,7 @@ func main() {
 		if req.DstPort != 12345 {
 			continue
 		}
-		
+
 		// Our IP header... not used, but necessary for TCP checksumming.
 		ip := &layers.IPv4{
 			SrcIP:    ipaddr.IP, // TODO
@@ -66,7 +66,7 @@ func main() {
 			ComputeChecksums: true,
 			FixLengths:       true,
 		}
-		if err := gopacket.SerializeLayers(buf, opts, res, gopacket.Payload("response\r")); err != nil {
+		if err := gopacket.SerializeLayers(buf, opts, res, gopacket.Payload("response\n")); err != nil {
 			log.Fatal(err)
 		}
 
@@ -74,19 +74,21 @@ func main() {
 		if _, err := conn.WriteTo(buf.Bytes(), ipaddr); err != nil {
 			log.Fatal(err)
 		}
-		/*
-		// 交换源端和目的端端口
-		buf[0], buf[1], buf[2], buf[3] = buf[2], buf[3], buf[0], buf[1]
-		conn.WriteTo(buf[:n], addr)
-		*/
 	}
 }
 
 /*
-$ sudo ./rawsock_udp 
-2017/08/11 16:09:24 ReadFrom 127.0.0.1, 24, 123123123123123
+# drop ICMP(destination unreachable) output
+sudo iptables -A OUTPUT  -p icmp --icmp-type 3 -j DROP
+
+$ sudo ./rawsock_udp_send
+2017/08/13 15:22:32 recv from ip: 127.0.0.1
+2017/08/13 15:22:32 recv udp port: 54535 -> 12345(italk)
+2017/08/13 15:22:32 recv from ip: 127.0.0.1
+2017/08/13 15:22:32 recv udp port: 12345(italk) -> 54535
 
 $ nc -u 127.0.0.1 12345
-123123123123123
+123
+response
 
 */
