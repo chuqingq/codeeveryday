@@ -1,4 +1,4 @@
-nohttpd的benchmark结果是1.7w~1.9w
+# nanohttpd的benchmark结果是1.7w~1.9w
 
 chuqq@chuqq-hp:~$ curl http://192.168.54.118:8080/
 hello worldchuqq@chuqq-hp:~$ 
