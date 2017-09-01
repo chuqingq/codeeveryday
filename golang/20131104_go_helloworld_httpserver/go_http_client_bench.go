@@ -27,6 +27,7 @@ func main() {
 			wg.Done()
 		}()
 	}
+	log.Printf("started...")
 
 	wg.Wait()
 }
@@ -34,14 +35,15 @@ func main() {
 func worker() {
 	client := &http.Client{}
 	for i := 0; i < n/c; i++ {
-		// res, err := client.Get(url)
+		res, err := client.Get(url)
+		/*
 		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {
 			log.Printf("newrequest error: %v", err)
 			continue
 		}
-		// req.Header.Add("Connection", "Keep-Alive")
 		res, err := client.Do(req)
+		*/
 		if err != nil {
 			log.Printf("err: %v", err)
 			continue
