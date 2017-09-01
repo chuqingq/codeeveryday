@@ -35,6 +35,10 @@ $ time ./go_fasthttp_client_bench // n=1000000, c=100
 	2017/09/01 20:06:33 started...
 	// ...
 	2017/09/01 20:06:57 concurrent finish
+	speed: 41022.02036911018 requests/second
 	real	0m24.168s
 	user	0m14.832s
 	sys	0m15.700s
+
+$ ./wrk -c 100 -d 20 -t 4 http://127.0.0.1:8081
+	Requests/sec:  49342.86

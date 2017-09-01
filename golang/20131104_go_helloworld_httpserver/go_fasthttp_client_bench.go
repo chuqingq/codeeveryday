@@ -3,12 +3,8 @@ package main
 
 import (
 	"log"
-	// "net"
-	// "io"
-	// "io/ioutil"
-	// "net/http"
 	"sync"
-	// "time"
+	"time"
 
 	"github.com/valyala/fasthttp"
 )
@@ -21,41 +17,31 @@ var (
 
 func main() {
 	var wg sync.WaitGroup
+	start := time.Now()
 
+	count := n/c
 	for i := 0; i < c; i++ {
 		wg.Add(1)
 		go func() {
-			worker()
+			worker(count)
 			wg.Done()
 		}()
 	}
 	log.Printf("started...")
 
 	wg.Wait()
+	elapsed := time.Now().Sub(start).Seconds()
+	log.Printf("speed: %v requests/second", float64(n)/elapsed)
 }
 
-func worker() {
-	// client := &http.Client{}
+func worker(count int) {
 	client := &fasthttp.Client{}
-	buf := make([]byte, 1024)
-	for i := 0; i < n/c; i++ {
-		// res, err := client.Get(url)
+	buf := make([]byte, 128)
+	for i := 0; i < count; i++ {
 		_, _, err := client.Get(buf, url)
-		/*
-		req, err := http.NewRequest("GET", url, nil)
-		if err != nil {
-			log.Printf("newrequest error: %v", err)
-			continue
-		}
-		res, err := client.Do(req)
-		*/
 		if err != nil {
 			log.Printf("err: %v", err)
-			continue
 		}
-		// io.Copy(ioutil.Discard, res.Body)
-		// res.Body.Close()
 	}
-	log.Printf("concurrent finish")
 }
 
