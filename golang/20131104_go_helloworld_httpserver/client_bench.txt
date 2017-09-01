@@ -22,3 +22,19 @@ client3: codeeveryday/golang/20131104_go_helloworld_httpserver/go_fasthttp_clien
 	real	0m10.260s
 	user	0m2.644s
 	sys	0m3.872s
+
+# callmodel
+
+$ time ab -c 100 -n 1000000 -k http://127.0.0.1:8081/
+	48027.12 [#/sec]
+	real	0m21.925s
+	user	0m4.636s
+	sys	0m13.744s
+
+$ time ./go_fasthttp_client_bench // n=1000000, c=100
+	2017/09/01 20:06:33 started...
+	// ...
+	2017/09/01 20:06:57 concurrent finish
+	real	0m24.168s
+	user	0m14.832s
+	sys	0m15.700s
