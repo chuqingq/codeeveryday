@@ -1,0 +1,24 @@
+server is: codeeveryday/golang/20131104_go_helloworld_httpserver/test2_httpserver.go
+
+env: sony vaio
+
+client1: time ab -c 1 -n 100000 -k http://127.0.0.1:8081/ # 9 seconds
+	11063.29 [#/sec]
+	real	0m9.145s
+	user	0m0.588s
+	sys	0m2.512s
+
+client2: codeeveryday/golang/20131104_go_helloworld_httpserver/go_http_client_bench.go # 19 seconds
+	time ./go_http_client_bench
+	2017/09/01 18:38:00 started...
+	2017/09/01 18:38:19 concurrent finish
+	real	0m18.897s
+	user	0m11.120s
+	sys	0m8.044s
+
+client3: codeeveryday/golang/20131104_go_helloworld_httpserver/go_fasthttp_client_bench.go # 10~11 seconds
+	2017/09/01 19:54:42 started...
+	2017/09/01 19:54:52 concurrent finish
+	real	0m10.260s
+	user	0m2.644s
+	sys	0m3.872s
