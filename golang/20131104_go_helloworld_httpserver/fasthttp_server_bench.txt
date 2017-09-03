@@ -1,0 +1,30 @@
+use fasthttp as server
+
+$ time ab -c 100 -n 1000000 -k http://127.0.0.1:8081/
+	63547.08 [#/sec]
+	real	0m16.964s
+	user	0m4.608s
+	sys	0m12.220s
+
+
+$ time ./go_fasthttp_client_bench
+	2017/09/03 21:12:43 started...
+	2017/09/03 21:12:56 speed: 73780.74627291356 requests/second
+
+	real	0m13.798s
+	user	0m12.884s
+	sys	0m13.712s
+
+$ time ./wrk -c 100 -d 20 -t 4 http://127.0.0.1:8081
+	Running 20s test @ http://127.0.0.1:8081
+	  4 threads and 100 connections
+	  Thread Stats   Avg      Stdev     Max   +/- Stdev
+	    Latency     1.18ms    1.36ms  35.02ms   93.99%
+	    Req/Sec    24.68k     2.45k   32.67k    77.62%
+	  1966521 requests in 20.03s, 273.81MB read
+	Requests/sec:  98175.01
+	Transfer/sec:     13.67MB
+
+	real	0m20.155s
+	user	0m5.448s
+	sys	0m25.188s
