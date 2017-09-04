@@ -1,0 +1,46 @@
+env: hp(Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz * 8)
+
+
+# top1 wrk -> fasthttp: 33w
+
+$ ./wrk -c 100 -d 20 -t 4 http://127.0.0.1:8081
+Running 20s test @ http://127.0.0.1:8081
+  4 threads and 100 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   405.70us  836.53us  16.74ms   94.49%
+    Req/Sec    84.18k     7.27k  102.03k    72.50%
+  6707976 requests in 20.04s, 0.91GB read
+Requests/sec: 334801.73
+Transfer/sec:     46.62MB
+
+# top2 ab -> fasthttp: 16.9w
+
+169463.18 [#/sec] (mean)
+
+# top3 fasthttp -> fasthttp: 16.5w
+
+165449.8559122436 requests/second
+
+
+# wrk -> go_http: 16w
+
+$ ./wrk -c 100 -d 20 -t 4 http://127.0.0.1:8081
+Running 20s test @ http://127.0.0.1:8081
+  4 threads and 100 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   786.29us    0.93ms  16.01ms   89.01%
+    Req/Sec    41.36k     4.94k   60.03k    70.38%
+  3301035 requests in 20.08s, 402.96MB read
+Requests/sec: 164417.19
+Transfer/sec:     20.07MB
+
+# ab -> go_http: 12.7w
+
+127586.64 [#/sec]
+
+# fasthttp -> go_http: 10.6w
+
+$ ./go_fasthttp_client_bench 
+2017/09/04 11:50:29 started...
+2017/09/04 11:50:38 speed: 106762.95682084814 requests/second
+
