@@ -36,12 +36,14 @@ func main() {
 
 func worker(count int) {
 	client := &fasthttp.Client{}
-	buf := make([]byte, 128)
+	// buf := make([]byte, 128)
+	var buf []byte
 	for i := 0; i < count; i++ {
-		_, _, err := client.Get(buf, url)
+		_, body, err := client.Get(buf, url)
 		if err != nil {
 			log.Printf("err: %v", err)
 		}
+		buf = body
 	}
 }
 
