@@ -6,26 +6,31 @@ package utils
 // * 遍历
 // * peektail
 
-const capacity = 3
+var sortedLimitQueueCapacity int
+var sortedLimitQueueCompare func(value1, value2 interface{}) bool
 
-type SortedLimitQueue struct {
-	nodes   []interface{}
-	start   int
-	length  int
-	compare func(value1, value2 interface{}) bool // <=
+func SortedLimitQueueInit(capacity int, compare func(value1, value2 interface{}) bool) {
+	sortedLimitQueueCapacity = capacity
+	sortedLimitQueueCompare = compare
 }
 
-func NewSortedLimitQueue(compare func(value1, value2 interface{}) bool) *SortedLimitQueue {
+type SortedLimitQueue struct {
+	nodes  []interface{}
+	start  int
+	length int
+	// compare func(value1, value2 interface{}) bool // <=
+}
+
+func NewSortedLimitQueue() *SortedLimitQueue {
 	return &SortedLimitQueue{
-		nodes:   make([]interface{}, capacity, capacity),
-		compare: compare,
+		nodes: make([]interface{}, sortedLimitQueueCapacity, sortedLimitQueueCapacity),
 	}
 }
 
 func (s *SortedLimitQueue) insert(value interface{}) {
 	i := 0 // value应该排在第几个前面
 	for ; i < s.length; i++ {
-		if !s.compare(s.nodes[s.start+i], value) {
+		if !sortedLimitQueueCompare(s.nodes[s.start+i], value) {
 			break
 		}
 	}
@@ -45,13 +50,13 @@ func (s *SortedLimitQueue) insert(value interface{}) {
 }
 
 func (s *SortedLimitQueue) Add(value interface{}) interface{} {
-	if s.length < capacity {
+	if s.length < sortedLimitQueueCapacity {
 		s.insert(value)
 		return nil
 	}
 
-	// s.length == capacity
-	if s.compare(s.PeekTail(), value) {
+	// s.length == sortedLimitQueueCapacity
+	if sortedLimitQueueCompare(s.PeekTail(), value) {
 		return value
 	} else {
 		tail := s.PopTail()
