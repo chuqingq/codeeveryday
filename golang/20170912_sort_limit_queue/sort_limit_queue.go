@@ -6,7 +6,7 @@ package utils
 // * 遍历
 // * peektail
 
-const capacity = 32
+const capacity = 3
 
 type SortedLimitQueue struct {
 	nodes   []interface{}
@@ -34,7 +34,7 @@ func (s *SortedLimitQueue) insert(value interface{}) {
 		copy(s.nodes[0:], s.nodes[s.start:s.start+i])
 	}
 
-	if s.length > i {
+	if s.length > i && s.start != 1 {
 		copy(s.nodes[i+1:], s.nodes[s.start+i:s.start+i+s.length-i+1])
 	}
 

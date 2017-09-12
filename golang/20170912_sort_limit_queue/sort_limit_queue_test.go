@@ -18,7 +18,8 @@ func Test_test1(t *testing.T) {
 	for i := 0; i < len(array); i++ {
 		t.Logf("op: %v", array[i])
 		if array[i] > 0 {
-			q.Add(array[i])
+			p := q.Add(array[i])
+			t.Logf("Add: %v", p)
 		} else if array[i] == 0 {
 			p := q.PopHead()
 			t.Logf("PopHead: %v", p)
@@ -27,13 +28,18 @@ func Test_test1(t *testing.T) {
 			t.Logf("PopTail: %v", p)
 		}
 
-		t.Logf("q: %v", q)
+		// check queue valid
+		if q.start+q.Length() > capacity {
+			t.Fatalf("q.Length()[%v] > capacity", q.Length())
+		}
+		last := 0
+		for j := 0; j < q.Length(); j++ {
+			v := q.PeekN(j).(int)
+			if v == 0 || v < last {
+				t.Fatalf("q value error: %v", q)
+			}
+			last = v
+		}
 	}
-
-	if q.Length() != 3 || q.start != 0 {
-		t.Fatalf("q invalid %v\n", q)
-	}
-
-	// t.Fatalf("q: %v\n", q)
 }
 
