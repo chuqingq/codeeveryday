@@ -13,6 +13,22 @@ Running 20s test @ http://127.0.0.1:8081
 Requests/sec: 334801.73
 Transfer/sec:     46.62MB
 
+# wrk -> libevent.http: 28w
+
+$ time ./wrk -c 100 -d 20 -t 4 http://127.0.0.1:8081/dump
+Running 20s test @ http://127.0.0.1:8081/dump
+  4 threads and 100 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   797.46us    1.44ms  30.28ms   88.51%
+    Req/Sec    71.08k    14.56k  115.91k    69.50%
+  5671928 requests in 20.06s, 649.10MB read
+Requests/sec: 282719.55
+Transfer/sec:     32.35MB
+
+real	0m20.066s
+user	0m7.340s
+sys	0m33.364s
+
 # top2 ab -> fasthttp: 16.9w
 
 169463.18 [#/sec] (mean)
