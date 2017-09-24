@@ -44,3 +44,17 @@ $ ./go_fasthttp_client_bench
 2017/09/04 11:50:29 started...
 2017/09/04 11:50:38 speed: 106762.95682084814 requests/second
 
+# wrk -> seastar_httpd:30~40w
+
+用的是家里的i7-6700：
+
+$ wrk -c 100 -d 20 -t 4 http://127.0.0.1:10000
+Running 20s test @ http://127.0.0.1:10000
+  4 threads and 100 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   411.86us  576.25us  19.91ms   89.14%
+    Req/Sec    81.14k    10.42k  124.97k    69.50%
+  6465403 requests in 20.02s, 776.90MB read
+Requests/sec: 322890.33
+Transfer/sec:     38.80MB
+
