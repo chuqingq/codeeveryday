@@ -35,3 +35,15 @@ BenchmarkIntAdd-4      	10000000000	         0.69 ns/op
 PASS
 ok  	_/home/chuqq/work/codeeveryday/golang/20171001_go_atomic_bench	14.219s
 
+
+## use c/gcc
+
+$ gcc c_atomic_bench.c
+$ ./a.out 
+1000000000
+2430938
+use value++: 0.002431
+1000000000
+8649885
+use atomicadd: 0.008650
+
