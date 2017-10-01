@@ -1,17 +1,53 @@
 env: hp(Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz * 8)
 
 
-# top1 wrk -> fasthttp: 33w
+# top1 wrk -> fasthttp: 40w
 
-$ ./wrk -c 100 -d 20 -t 4 http://127.0.0.1:8081
-Running 20s test @ http://127.0.0.1:8081
+$ time ./wrk -c 100 -d 20 -t 4 http://127.0.0.1:8081/
+Running 20s test @ http://127.0.0.1:8081/
   4 threads and 100 connections
   Thread Stats   Avg      Stdev     Max   +/- Stdev
-    Latency   405.70us  836.53us  16.74ms   94.49%
-    Req/Sec    84.18k     7.27k  102.03k    72.50%
-  6707976 requests in 20.04s, 0.91GB read
-Requests/sec: 334801.73
-Transfer/sec:     46.62MB
+    Latency   303.36us  483.32us  13.28ms   93.65%
+    Req/Sec   100.77k     6.97k  120.41k    72.50%
+  8026927 requests in 20.02s, 1.09GB read
+Requests/sec: 400953.00
+Transfer/sec:     55.83MB
+
+real	0m20.024s
+user	0m11.548s
+sys	0m44.760s
+
+# top2: wrk -> nginx(openresty+echo-nginx-module): 29w
+
+$ time ./wrk -c 100 -d 20 -t 4 http://127.0.0.1:8081/
+Running 20s test @ http://127.0.0.1:8081/
+  4 threads and 100 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   750.38us    1.48ms  33.83ms   90.27%
+    Req/Sec    73.30k    10.52k  105.78k    69.75%
+  5847086 requests in 20.08s, 1.08GB read
+Requests/sec: 291202.39
+Transfer/sec:     54.99MB
+
+real	0m20.083s
+user	0m11.256s
+sys	0m34.452s
+
+# wrk -> libevent.http: 28w
+
+$ time ./wrk -c 100 -d 20 -t 4 http://127.0.0.1:8081/dump
+Running 20s test @ http://127.0.0.1:8081/dump
+  4 threads and 100 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   797.46us    1.44ms  30.28ms   88.51%
+    Req/Sec    71.08k    14.56k  115.91k    69.50%
+  5671928 requests in 20.06s, 649.10MB read
+Requests/sec: 282719.55
+Transfer/sec:     32.35MB
+
+real	0m20.066s
+user	0m7.340s
+sys	0m33.364s
 
 # top2 ab -> fasthttp: 16.9w
 
@@ -43,4 +79,18 @@ Transfer/sec:     20.07MB
 $ ./go_fasthttp_client_bench 
 2017/09/04 11:50:29 started...
 2017/09/04 11:50:38 speed: 106762.95682084814 requests/second
+
+# wrk -> seastar_httpd:30~40w
+
+用的是家里的i7-6700：
+
+$ wrk -c 100 -d 20 -t 4 http://127.0.0.1:10000
+Running 20s test @ http://127.0.0.1:10000
+  4 threads and 100 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   411.86us  576.25us  19.91ms   89.14%
+    Req/Sec    81.14k    10.42k  124.97k    69.50%
+  6465403 requests in 20.02s, 776.90MB read
+Requests/sec: 322890.33
+Transfer/sec:     38.80MB
 
