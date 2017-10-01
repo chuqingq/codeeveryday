@@ -12,3 +12,10 @@ func BenchmarkAtomicAdd(b *testing.B) {
 	}
 }
 
+func BenchmarkIntAdd(b *testing.B) {
+	var value int32
+	for i :=0; i < b.N; i++ {
+                value++
+        }
+}
+

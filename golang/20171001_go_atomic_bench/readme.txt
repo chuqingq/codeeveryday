@@ -27,11 +27,11 @@ NUMA node0 CPU(s):     0-3
 Flags:                 fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2 ssse3 cx16 xtpr pdcm sse4_1 sse4_2 popcnt aes lahf_lm tpr_shadow vnmi flexpriority ept vpid dtherm ida arat
 
 
-
-$ go test -bench AtomicAdd -benchtime 10s
+$ go test -bench=.* -benchtime 5s
 goos: linux
 goarch: amd64
-BenchmarkAtomicAdd-4   	2000000000	         6.56 ns/op
+BenchmarkAtomicAdd-4   	1000000000	         6.56 ns/op
+BenchmarkIntAdd-4      	10000000000	         0.69 ns/op
 PASS
-ok  	_/home/chuqq/work/codeeveryday/golang/20171001_go_atomic_bench	13.803s
+ok  	_/home/chuqq/work/codeeveryday/golang/20171001_go_atomic_bench	14.219s
 
