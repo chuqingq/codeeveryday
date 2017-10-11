@@ -127,19 +127,14 @@ void *thread_main(void *arg) {
 
 	ret = bind(thread->listenfd, (struct sockaddr*)&addr, sizeof(struct sockaddr));
 	assert(ret == 0 && "bind success");
-	// if (ret < 0) {perror("bind"); return -1;}
 
-	ret = listen(thread->listenfd, 1024); 
-	// if (ret < 0) {perror("listen"); return -1;}
+	ret = listen(thread->listenfd, 1024);
 	assert(ret == 0 && "listen success");
 
-	// ret = set_nonblock(thread->listenfd);
-	// assert(ret == 0);
 	int flags = fcntl(thread->listenfd, F_GETFL, 0);
 	ret = fcntl(thread->listenfd, F_SETFL, flags | O_NONBLOCK);
 	assert(ret == 0 && "setnonblock(listenfd) success");
 
-	// flags = AE_READABLE;
 	ret = aeCreateFileEvent(thread->loop, thread->listenfd, AE_READABLE, socket_accept, thread);
 	assert(ret == AE_OK && "aeCreateFileEvent(listenfd) success");
 
