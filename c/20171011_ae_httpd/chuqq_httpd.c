@@ -51,7 +51,7 @@ static void socket_readable(aeEventLoop *loop, int fd, void *data, int mask) {
 			aeCreateFileEvent(conn->thread->loop, fd, AE_WRITABLE, socket_writeable, conn);
 			// printf("socket_readable: aeCreateFileEvent\n");
 			conn->write_cur = 0;
-			// TODO 默认1024的buf不会满
+			// 默认1024的buf不会满
 		}
 	} else {
 		aeDeleteFileEvent(loop, fd, AE_READABLE);
@@ -87,7 +87,7 @@ static void socket_accept(aeEventLoop *loop, int listenfd, void *data, int mask)
 
 	struct sockaddr_in addr;
 	socklen_t addrlen = sizeof(struct sockaddr);
-	int fd = accept(thread->listenfd, (struct sockaddr*)&addr, &addrlen); // TODO NULL可以吗？
+	int fd = accept(thread->listenfd, (struct sockaddr*)&addr, &addrlen);
 	if (fd < 0) {
 		perror("accept erorr:");
 		return;
