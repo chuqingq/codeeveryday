@@ -17,7 +17,23 @@ real	0m20.024s
 user	0m11.548s
 sys	0m44.760s
 
-# top2: wrk -> nginx(openresty+echo-nginx-module): 29w
+# top2: wrk -> netty-codec-http(4.1.16Final): 35w
+
+chuqq@chuqq-hp:~$ time wrk -c 100 -d 20 -t 4 http://127.0.0.1:8080/
+Running 20s test @ http://127.0.0.1:8080/
+  4 threads and 100 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     1.03ms    3.22ms  76.35ms   95.14%
+    Req/Sec    87.87k    21.46k  132.67k    60.75%
+  7004454 requests in 20.04s, 668.00MB read
+Requests/sec: 349438.28
+Transfer/sec:     33.33MB
+
+real	0m20.080s
+user	0m10.436s
+sys	0m43.188s
+
+# top3: wrk -> nginx(openresty+echo-nginx-module): 29w
 
 $ time ./wrk -c 100 -d 20 -t 4 http://127.0.0.1:8081/
 Running 20s test @ http://127.0.0.1:8081/
