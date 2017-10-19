@@ -1,5 +1,20 @@
 env: hp(Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz * 8)
 
+# top1 wrk->chuqq_httpd(ae): 56w
+
+$ time wrk -c 100 -d 20 -t 4 http://127.0.0.1:8081/
+Running 20s test @ http://127.0.0.1:8081/
+  4 threads and 100 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   743.73us    1.19ms  21.35ms   82.33%
+    Req/Sec   142.34k     4.64k  148.88k    93.15%
+  11372158 requests in 20.10s, 1.41GB read
+Requests/sec: 565764.62
+Transfer/sec:     71.76MB
+
+real	0m20.136s
+user	0m17.436s
+sys	1m0.840s
 
 # top1 wrk -> fasthttp: 40w
 
