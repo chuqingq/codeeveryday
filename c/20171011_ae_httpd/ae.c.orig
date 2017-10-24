@@ -351,53 +351,53 @@ int aeProcessEvents(aeEventLoop *eventLoop, int flags)
     int processed = 0, numevents;
 
     /* Nothing to do? return ASAP */
-    // if (!(flags & AE_TIME_EVENTS) && !(flags & AE_FILE_EVENTS)) return 0;
+    if (!(flags & AE_TIME_EVENTS) && !(flags & AE_FILE_EVENTS)) return 0;
 
     /* Note that we want call select() even if there are no
      * file events to process as long as we want to process time
      * events, in order to sleep until the next time event is ready
      * to fire. */
-    // if (eventLoop->maxfd != -1 ||
-    //     ((flags & AE_TIME_EVENTS) && !(flags & AE_DONT_WAIT))) {
+    if (eventLoop->maxfd != -1 ||
+        ((flags & AE_TIME_EVENTS) && !(flags & AE_DONT_WAIT))) {
         int j;
-        // aeTimeEvent *shortest = NULL;
-        // struct timeval tv, *tvp;
+        aeTimeEvent *shortest = NULL;
+        struct timeval tv, *tvp;
 
-        // if (flags & AE_TIME_EVENTS && !(flags & AE_DONT_WAIT))
-        //     shortest = aeSearchNearestTimer(eventLoop);
-        // if (shortest) {
-        //     long now_sec, now_ms;
+        if (flags & AE_TIME_EVENTS && !(flags & AE_DONT_WAIT))
+            shortest = aeSearchNearestTimer(eventLoop);
+        if (shortest) {
+            long now_sec, now_ms;
 
-        //     aeGetTime(&now_sec, &now_ms);
-        //     tvp = &tv;
+            aeGetTime(&now_sec, &now_ms);
+            tvp = &tv;
 
-        //     /* How many milliseconds we need to wait for the next
-        //      * time event to fire? */
-        //     long long ms =
-        //         (shortest->when_sec - now_sec)*1000 +
-        //         shortest->when_ms - now_ms;
+            /* How many milliseconds we need to wait for the next
+             * time event to fire? */
+            long long ms =
+                (shortest->when_sec - now_sec)*1000 +
+                shortest->when_ms - now_ms;
 
-        //     if (ms > 0) {
-        //         tvp->tv_sec = ms/1000;
-        //         tvp->tv_usec = (ms % 1000)*1000;
-        //     } else {
-        //         tvp->tv_sec = 0;
-        //         tvp->tv_usec = 0;
-        //     }
-        // } else {
-        //     /* If we have to check for events but need to return
-        //      * ASAP because of AE_DONT_WAIT we need to set the timeout
-        //      * to zero */
-        //     if (flags & AE_DONT_WAIT) {
-        //         tv.tv_sec = tv.tv_usec = 0;
-        //         tvp = &tv;
-        //     } else {
-        //         /* Otherwise we can block */
-        //         tvp = NULL; /* wait forever */
-        //     }
-        // }
+            if (ms > 0) {
+                tvp->tv_sec = ms/1000;
+                tvp->tv_usec = (ms % 1000)*1000;
+            } else {
+                tvp->tv_sec = 0;
+                tvp->tv_usec = 0;
+            }
+        } else {
+            /* If we have to check for events but need to return
+             * ASAP because of AE_DONT_WAIT we need to set the timeout
+             * to zero */
+            if (flags & AE_DONT_WAIT) {
+                tv.tv_sec = tv.tv_usec = 0;
+                tvp = &tv;
+            } else {
+                /* Otherwise we can block */
+                tvp = NULL; /* wait forever */
+            }
+        }
 
-        numevents = aeApiPoll(eventLoop, /*tvp*/NULL);
+        numevents = aeApiPoll(eventLoop, tvp);
         for (j = 0; j < numevents; j++) {
             aeFileEvent *fe = &eventLoop->events[eventLoop->fired[j].fd];
             int mask = eventLoop->fired[j].mask;
@@ -417,10 +417,10 @@ int aeProcessEvents(aeEventLoop *eventLoop, int flags)
             }
             processed++;
         }
-    // }
+    }
     /* Check time events */
-    // if (flags & AE_TIME_EVENTS)
-    //     processed += processTimeEvents(eventLoop);
+    if (flags & AE_TIME_EVENTS)
+        processed += processTimeEvents(eventLoop);
 
     return processed; /* return the number of processed file/time events */
 }
@@ -463,4 +463,3 @@ char *aeGetApiName(void) {
 void aeSetBeforeSleepProc(aeEventLoop *eventLoop, aeBeforeSleepProc *beforesleep) {
     eventLoop->beforesleep = beforesleep;
 }
-
