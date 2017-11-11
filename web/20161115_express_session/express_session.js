@@ -10,6 +10,10 @@ var app = express()
 // Use the session middleware
 app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 5000 }}))
 
+// use static
+app.use(express.static('public'))
+// curl http://127.0.0.1:3000/index.html -> hello world
+
 // Access the session as req.session
 app.get('/', function(req, res, next) {
   var sess = req.session
