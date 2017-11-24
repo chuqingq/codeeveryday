@@ -1,0 +1,19 @@
+{
+  "name": "node_reverse",
+  "version": "1.0.0",
+  "description": "reverse proxy by nodejs",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "reverse-proxy",
+    "nodejs"
+  ],
+  "author": "chuqingq@qq.com",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.16.2",
+    "http-proxy-middleware": "^0.17.4"
+  }
+}
