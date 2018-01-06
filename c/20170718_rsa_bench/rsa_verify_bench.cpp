@@ -188,6 +188,17 @@ int public_verify(const unsigned char *in_str, unsigned int in_len,unsigned char
     }
     return result;
 }
+
+static long long ustime(void) {
+    struct timeval tv;
+    // long long ust;
+
+    gettimeofday(&tv, NULL);
+    // ust = ((long)tv.tv_sec)*1000000;
+    // ust += tv.tv_usec;
+    // return ust;
+    return ((long)tv.tv_sec)*1000000 + tv.tv_usec;
+}
  
 int main()
 {   
@@ -247,10 +258,14 @@ int main()
     ret =  public_verify((const unsigned char*)plainText, strlen(plainText),signret, siglen,/*( unsigned char*)publicKey*/publicRSA);
     printf("verify ret =[%d]\n",ret);
 
+    const int count = 100000;
+    long long start = ustime();
     // RSA_verify benchmark
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0; i < count; i++) {
         public_verify((const unsigned char*)plainText, strlen(plainText),signret, siglen,/*( unsigned char*)publicKey*/publicRSA);
     }
+    long long stop = ustime();
+    printf("elapsed: %lld us, count: %d\n", stop-start, count);
     
     return (0);
 }

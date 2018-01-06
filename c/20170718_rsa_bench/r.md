@@ -48,8 +48,10 @@ sys	0m0.004s
 ```
 g++ -o rsa_verify rsa_verify_bench.cpp -O2 -lcrypto -lssl -pthread -ldl
 $ time ./rsa_verify_bench
-real   	0m0.040s
-user   	0m0.036s
+elapsed: 3309904 us, count: 100000
+
+real   	0m3.314s
+user   	0m3.308s
 sys    	0m0.000s
 ```
 这个性能数据是在virtualbox上验证的结果。
