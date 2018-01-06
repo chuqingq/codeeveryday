@@ -48,13 +48,11 @@ sys	0m0.004s
 ```
 g++ -o rsa_verify rsa_verify_bench.cpp -O2 -lcrypto -lssl -pthread -ldl
 $ time ./rsa_verify_bench
-real   	0m0.066s
-user   	0m0.060s
+real   	0m0.040s
+user   	0m0.036s
 sys    	0m0.000s
 ```
-这个性能数据是在virtualbox上验证的结果，而且还是包含了：
-1、两套加解密
-2、每次create_rsa
+这个性能数据是在virtualbox上验证的结果。
 
 channel的算法可以改成：
 1、c->s: clientPublicKey,clientRandom

@@ -165,10 +165,10 @@ int public_decrypt(unsigned char*enc_data,int data_len,unsigned char*key, unsign
 } 
 
 //私钥签名，公钥验签
-int private_sign(const unsigned char *in_str,unsigned int in_str_len,unsigned char *outret,unsigned int *outlen,unsigned char*key)
+int private_sign(const unsigned char *in_str,unsigned int in_str_len,unsigned char *outret,unsigned int *outlen,/*unsigned char*key*/RSA *privateRSA)
 {
-    RSA* rsa = createRSA(key,0);  
-    int result = RSA_sign(NID_sha1,in_str,in_str_len,outret,outlen,rsa);
+    // RSA* rsa = createRSA(key,0);  
+    int result = RSA_sign(NID_sha1,in_str,in_str_len,outret,outlen,privateRSA);
     if(result != 1)
     {
         printf("sign error\n");
@@ -176,10 +176,11 @@ int private_sign(const unsigned char *in_str,unsigned int in_str_len,unsigned ch
     }
     return result;
 }
-int public_verify(const unsigned char *in_str, unsigned int in_len,unsigned char *outret, unsigned int outlen,unsigned char*key)
+
+int public_verify(const unsigned char *in_str, unsigned int in_len,unsigned char *outret, unsigned int outlen,/*unsigned char*key*/RSA *publicRSA)
 {
-    RSA* rsa = createRSA(key,1); 
-    int result = RSA_verify(NID_sha1,in_str,in_len,outret,outlen,rsa);
+    // RSA* rsa = createRSA(key,1); 
+    int result = RSA_verify(NID_sha1,in_str,in_len,outret,outlen,publicRSA);
     if(result != 1)
     {
         printf("verify error\n");
@@ -203,49 +204,52 @@ int main()
 
     printf("source data=[%s]\n",plainText);
 
-    printf("public encrytpt ----private decrypt \n\n");
-    int encrypted_length=public_encrypt((unsigned char*)plainText,strlen(plainText),( unsigned char*)publicKey,encrypted);
-    if(encrypted_length== -1)
-    {   
-        printf("encrypted error \n");
-        exit(0);
-    }
-    printf("Encrypted length =%d\n",encrypted_length); 
-    int decrypted_length= private_decrypt((unsigned char*)encrypted,encrypted_length,(unsigned char*)privateKey, decrypted);
-    if(decrypted_length== -1)
-    {  
-        printf("decrypted error \n");
-        exit(0);
-    }
-    printf("DecryptedText =%s\n",decrypted);
-    printf("DecryptedLength =%d\n",decrypted_length); 
+    // printf("public encrytpt ----private decrypt \n\n");
+    // int encrypted_length=public_encrypt((unsigned char*)plainText,strlen(plainText),( unsigned char*)publicKey,encrypted);
+    // if(encrypted_length== -1)
+    // {   
+    //     printf("encrypted error \n");
+    //     exit(0);
+    // }
+    // printf("Encrypted length =%d\n",encrypted_length); 
+    // int decrypted_length= private_decrypt((unsigned char*)encrypted,encrypted_length,(unsigned char*)privateKey, decrypted);
+    // if(decrypted_length== -1)
+    // {  
+    //     printf("decrypted error \n");
+    //     exit(0);
+    // }
+    // printf("DecryptedText =%s\n",decrypted);
+    // printf("DecryptedLength =%d\n",decrypted_length); 
 
-    printf("private encrytpt ----public decrypt \n\n");
-    encrypted_length=private_encrypt((unsigned char*)plainText,strlen(plainText),(unsigned char*)privateKey,encrypted);
-    if(encrypted_length== -1)
-    {    
-        printf("encrypted error \n");
-        exit(0);
-    }
-    printf("Encrypted length =%d\n",encrypted_length); 
-    decrypted_length= public_decrypt(encrypted,encrypted_length,(unsigned char*)publicKey, decrypted);
-    if(decrypted_length== -1)
-    {    
-        printf("decrypted error \n");
-        exit(0);
-    }
-    printf("DecryptedText =%s\n",decrypted);
-    printf("DecryptedLength =%d\n",decrypted_length); 
+    // printf("private encrytpt ----public decrypt \n\n");
+    // encrypted_length=private_encrypt((unsigned char*)plainText,strlen(plainText),(unsigned char*)privateKey,encrypted);
+    // if(encrypted_length== -1)
+    // {    
+    //     printf("encrypted error \n");
+    //     exit(0);
+    // }
+    // printf("Encrypted length =%d\n",encrypted_length); 
+    // decrypted_length= public_decrypt(encrypted,encrypted_length,(unsigned char*)publicKey, decrypted);
+    // if(decrypted_length== -1)
+    // {    
+    //     printf("decrypted error \n");
+    //     exit(0);
+    // }
+    // printf("DecryptedText =%s\n",decrypted);
+    // printf("DecryptedLength =%d\n",decrypted_length); 
     
     printf("\nprivate sign ----public verify \n\n");
-    int ret = private_sign((const unsigned char*)plainText,strlen(plainText),signret,&siglen,(unsigned char*)privateKey);
+    RSA *privateRSA = createRSA((unsigned char*)privateKey, 0);
+    RSA *publicRSA = createRSA((unsigned char*)publicKey, 1);
+
+    int ret = private_sign((const unsigned char*)plainText,strlen(plainText),signret,&siglen,/*(unsigned char*)privateKey*/privateRSA);
     printf("sign ret =[%d]\n",ret);
-    ret =  public_verify((const unsigned char*)plainText, strlen(plainText),signret, siglen,( unsigned char*)publicKey);
+    ret =  public_verify((const unsigned char*)plainText, strlen(plainText),signret, siglen,/*( unsigned char*)publicKey*/publicRSA);
     printf("verify ret =[%d]\n",ret);
 
     // RSA_verify benchmark
     for (int i = 0; i < 1000; i++) {
-        public_verify((const unsigned char*)plainText, strlen(plainText),signret, siglen,( unsigned char*)publicKey);
+        public_verify((const unsigned char*)plainText, strlen(plainText),signret, siglen,/*( unsigned char*)publicKey*/publicRSA);
     }
     
     return (0);
