@@ -243,7 +243,7 @@ int main()
     RSA *publicRSA = createRSA((unsigned char*)publicKey, 1);
 
     int ret = private_sign((const unsigned char*)plainText,strlen(plainText),signret,&siglen,/*(unsigned char*)privateKey*/privateRSA);
-    printf("sign ret =[%d]\n",ret);
+    printf("sign ret =[%d]\n",ret);// siglen为256。signret如果修改，verify就报错
     ret =  public_verify((const unsigned char*)plainText, strlen(plainText),signret, siglen,/*( unsigned char*)publicKey*/publicRSA);
     printf("verify ret =[%d]\n",ret);
 
