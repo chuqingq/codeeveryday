@@ -52,7 +52,7 @@ real   	0m0.066s
 user   	0m0.060s
 sys    	0m0.000s
 ```
-这个数据还是包含了：
+这个性能数据是在virtualbox上验证的结果，而且还是包含了：
 1、两套加解密
 2、每次create_rsa
 
