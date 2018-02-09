@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"net"
 )
 
@@ -12,27 +12,32 @@ func main() {
 		Port: 8080,
 	})
 	if err != nil {
-		fmt.Println("监听失败!", err)
+		log.Println("ListenUDP error: %v", err)
 		return
 	}
 	defer socket.Close()
 
+	data := make([]byte, 4096)
 	for {
 		// 读取数据
-		data := make([]byte, 4096)
-		read, remoteAddr, err := socket.ReadFromUDP(data)
+		readn, remoteAddr, err := socket.ReadFromUDP(data)
 		if err != nil {
-			fmt.Println("读取数据失败!", err)
+			log.Printf("ReadFromUDP error: %v", err)
 			continue
 		}
-		fmt.Printf("%v: %s\n\n", remoteAddr, data[0:read])
+		// fmt.Printf("%v: %s\n\n", remoteAddr, data[0:read])
 
 		// 发送数据
-		senddata := []byte("hello client!")
-		_, err = socket.WriteToUDP(senddata, remoteAddr)
+		// senddata := []byte("hello client!")
+		writen, err := socket.WriteToUDP(data[:readn], remoteAddr)
 		if err != nil {
+			log.Printf("WriteToUDP error: %v", err)
 			return
-			fmt.Println("发送数据失败!", err)
+		}
+
+		if writen != readn {
+			log.Printf("writen[%v] != readn[%v]", writen, readn)
+			return
 		}
 	}
 }

@@ -1,36 +1,58 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"net"
+	"time"
 )
+
+const COUNT = 100000
 
 func main() {
 	// 创建连接
 	socket, err := net.DialUDP("udp4", nil, &net.UDPAddr{
-		IP:   net.IPv4(127, 0, 0, 1),
+		IP:   net.IPv4(192, 168, 54, 118),
 		Port: 8080,
 	})
 	if err != nil {
-		fmt.Println("连接失败!", err)
+		log.Println("DialUDP error: %v", err)
 		return
 	}
 	defer socket.Close()
 
 	// 发送数据
-	senddata := []byte("hello server!")
-	_, err = socket.Write(senddata)
-	if err != nil {
-		fmt.Println("发送数据失败!", err)
-		return
-	}
-
-	// 接收数据
+	senddata := []byte("PING!")
 	data := make([]byte, 1024)
-	read, remoteAddr, err := socket.ReadFromUDP(data)
-	if err != nil {
-		fmt.Println("读取数据失败!", err)
-		return
+
+	start := time.Now()
+	for i := 0; i < COUNT; i++ {
+		writen, err := socket.Write(senddata)
+		if err != nil {
+			log.Printf("Write error: %v", err)
+			return
+		}
+		if writen != len(senddata) {
+			log.Printf("writen[%v] != len(senddata)[%v]", writen, len(senddata))
+			return
+		}
+	
+		// 接收数据
+		readn, _, err := socket.ReadFromUDP(data)
+		if err != nil {
+			log.Printf("ReadFromUDP: %v", err)
+			return
+		}
+
+		if readn != writen {
+			log.Printf("readn[%v] != writen[%v]", readn, writen)
+			return
+		}
+		// fmt.Printf("%v: %s\n", remoteAddr, data[0:read])
 	}
-	fmt.Printf("%v: %s\n", remoteAddr, data[0:read])
+	log.Printf("%v", time.Now().Sub(start)/COUNT)
 }
+
+// local output:
+// 2018/02/09 09:13:58 23.287µs
+// remote output:
+// 2018/02/09 09:20:45 353.44µs
