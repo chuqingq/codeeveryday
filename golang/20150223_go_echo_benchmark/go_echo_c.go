@@ -12,12 +12,12 @@ func main() {
 	buf := make([]byte, 10, 10)
 	PING := []byte("PING!")
 
-	before := time.Now()
-	c, err := net.Dial("tcp", "localhost:8080")
+	c, err := net.Dial("tcp", "192.168.54.118:8080")
 	if err != nil {
 		panic("Dial error: " + err.Error())
 	}
 
+	before := time.Now()
 	for i := 0; i < COUNT; i++ {
 		n, e := c.Write(PING)
 		if e != nil {
@@ -36,5 +36,10 @@ func main() {
 		}
 	}
 
-	fmt.Printf("%v\n", time.Now().Sub(before))
+	fmt.Printf("%v\n", time.Now().Sub(before)/COUNT)
 }
+
+// local output:
+// 24.688µs
+// remote output:
+// 385.01µs
