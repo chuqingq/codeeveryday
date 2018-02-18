@@ -38,7 +38,7 @@ RSA* rsa_load_privatekey(const char *path) {
 int main() {
     // 私钥可以预先转成rsa
     RSA* rsa = rsa_load_privatekey("./private.pem");
-    printf("sizeof(RSA): %d\n", sizeof(RSA)); // sizeof(RSA): 168
+    printf("sizeof(RSA): %d\n", sizeof(RSA)); // sizeof(RSA): 168。但是没什么用的，里面有BIGNUM*
 
     int rsa_size = RSA_size(rsa);
     // printf("rsa_size: %d\n", rsa_size);
