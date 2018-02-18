@@ -60,8 +60,9 @@ sys    	0m0.000s
 
 channel的算法可以改成：
 1、c->s: clientPublicKey,clientRandom
-2、c<-s: ServerSignature(clientRandom),RSAPublicKeyEncrypt(clientPublicKey,AesKey) 客户端验证服务器签名，拿到AesKey
-3、c->s: clientSignature(aesKey) 服务端校验客户端
+2、c<-s: 重定向。RSASign(serverPrivateKey, clientRandom)+RSAPublicKeyEncrypt(clientPublicKey, channels)
+2、c<-s: RSASign(serverPrivateKey, clientRandom)+RSAPublicKeyEncrypt(clientPublicKey, AESKey) 客户端验证服务器签名，拿到AesKey
+3、c->s: RSASign(clientPrivateKey, AESKey) 服务端校验客户端
 
 1、应该无需随机数：待确认
 2、java代码的RSAPublicKey只需要两个BigInteger，257+3字节：待确认是否和channel中使用的加密方式一样
