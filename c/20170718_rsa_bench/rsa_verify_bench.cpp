@@ -107,6 +107,14 @@ int createPrivateFile(char *file,const string &pristr)
     return (0);
 }
 
+int createPUBKEYFromRSA(RSA *rsa)
+{
+    FILE *file = fopen("pubkey222.crt", "w");
+    // PEM_write_RSAPublicKey(file, rsa);
+    PEM_write_RSAPublicKey(file, rsa);
+    return 0;
+}
+
 //读取密钥
 RSA* createRSA(unsigned char*key,int publi)
  {    
@@ -252,10 +260,14 @@ int main()
     printf("\nprivate sign ----public verify \n\n");
     RSA *privateRSA = createRSA((unsigned char*)privateKey, 0);
     printf("sizeof(*privateRSA): %d\n", sizeof(*privateRSA));
+    printf("RSA_size(): %d\n", RSA_size(privateRSA));
     RSA *publicRSA = createRSA((unsigned char*)publicKey, 1);
     printf("sizeof(*publicRSA): %d\n", sizeof(*publicRSA));
 
-    int ret = private_sign((const unsigned char*)plainText,strlen(plainText),signret,&siglen,/*(unsigned char*)privateKey*/privateRSA);
+    // 验证通过publicRSA生成publicKey，是否和原来一样
+    int ret = createPUBKEYFromRSA(publicRSA);
+
+    ret = private_sign((const unsigned char*)plainText,strlen(plainText),signret,&siglen,/*(unsigned char*)privateKey*/privateRSA);
     printf("sign ret =[%d]\n",ret);// siglen为256。signret如果修改，verify就报错
     ret =  public_verify((const unsigned char*)plainText, strlen(plainText),signret, siglen,/*( unsigned char*)publicKey*/publicRSA);
     printf("verify ret =[%d]\n",ret);
@@ -271,3 +283,4 @@ int main()
     
     return (0);
 }
+

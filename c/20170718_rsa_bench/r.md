@@ -56,8 +56,15 @@ sys    	0m0.000s
 ```
 这个性能数据是在virtualbox上验证的结果。
 
+# channel方案
+
 channel的算法可以改成：
 1、c->s: clientPublicKey,clientRandom
 2、c<-s: ServerSignature(clientRandom),RSAPublicKeyEncrypt(clientPublicKey,AesKey) 客户端验证服务器签名，拿到AesKey
 3、c->s: clientSignature(aesKey) 服务端校验客户端
 
+1、应该无需随机数：待确认
+2、java代码的RSAPublicKey只需要两个BigInteger，257+3字节：待确认是否和channel中使用的加密方式一样
+3、如果一样，那这两个BitInteger给openssl需要怎么编码？按照x.509标准编码，294字节
+
+如果不改动，则共用ip20+tcp20+chanel10+pubkey294+signature256=600B
