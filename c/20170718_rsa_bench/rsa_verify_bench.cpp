@@ -208,7 +208,7 @@ static long long ustime(void) {
     return ((long)tv.tv_sec)*1000000 + tv.tv_usec;
 }
  
-int main2()
+int main()
 {   
 
     char plainText[2048/8]= "Hello 12151 +++ == !@##$$%%^&&*&**()this is Ravi";//key length : 2048  
@@ -283,23 +283,7 @@ int main2()
     }
     long long stop = ustime();
     printf("elapsed: %lld us, count: %d\n", stop-start, count);
+    printf("average: %d ns/op\n", (stop-start)/count);
     
     return (0);
-}
-
-int main() {
-    const char *MODULUS = "CBC0DBBFCA6BA49FF490A86519E258A33A36B7AD041BC2F4E7AD60D77476F4BBCC479872BC6665189A669FAE7E038C475C89C96223EE2B3ACA52702978B67EBF0D47A1C38066D58AD33DEBDBAB80F2441838A5FD42DFC36C276FB05F7017C8112B4A6DC7D33A475DCDBC1C6F5500297DCF6307D9D3CE984E80CE0988462F955F052E183DC99A2F31877A5B07F76A85CAF3DD554314EBFE4418A2AD58A7EEBC8BA4F89CDABB3560BE50D563407C4D40C40CCD4EA55825FCCF2837C87F3C38042451721729F43E364BD843573168CA153E963BDBE795B612B3A4C7B21E4067EDC8AE9A4E6A80B4C42407D66697B87F8785663FD173C63C263D884B99153E3532C1";
-    // PUBLIC_EXPONENT: RSA_F4
-
-    RSA *r = RSA_new();
-    r->n = BN_new();
-    BN_hex2bn(&r->n, MODULUS);
-    r->e = BN_new();
-    BN_set_word(r->e, RSA_F4);
-
-    FILE *file = fopen("pubkey_2.crt", "w");
-    // PEM_write_RSAPublicKey(file, rsa);
-    PEM_write_RSAPublicKey(file, r);
-
-    return 0;
 }
