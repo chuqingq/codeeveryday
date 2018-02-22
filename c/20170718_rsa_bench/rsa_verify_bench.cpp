@@ -282,8 +282,7 @@ int main()
         public_verify((const unsigned char*)plainText, strlen(plainText),signret, siglen,/*( unsigned char*)publicKey*/publicRSA);
     }
     long long stop = ustime();
-    printf("elapsed: %lld us, count: %d\n", stop-start, count);
-    printf("average: %d ns/op\n", (stop-start)/count);
+    printf("count: %d, elapsed: %lld us, avg: %lld us/op\n", count, stop-start, (stop-start)/count);
     
     return (0);
 }

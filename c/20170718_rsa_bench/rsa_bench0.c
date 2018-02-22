@@ -35,13 +35,24 @@ RSA* rsa_load_privatekey(const char *path) {
     return rsa;
 }
 
+static long long ustime(void) {
+    struct timeval tv;
+    // long long ust;
+
+    gettimeofday(&tv, NULL);
+    // ust = ((long)tv.tv_sec)*1000000;
+    // ust += tv.tv_usec;
+    // return ust;
+    return ((long)tv.tv_sec)*1000000 + tv.tv_usec;
+}
+
 int main() {
     // 私钥可以预先转成rsa
     RSA* rsa = rsa_load_privatekey("./private.pem");
-    printf("sizeof(RSA): %d\n", sizeof(RSA)); // sizeof(RSA): 168。但是没什么用的，里面有BIGNUM*
+    // printf("sizeof(RSA): %d\n", sizeof(RSA)); // sizeof(RSA): 168。但是没什么用的，里面有BIGNUM*
 
     int rsa_size = RSA_size(rsa);
-    // printf("rsa_size: %d\n", rsa_size);
+    printf("rsa_size: %d\n", rsa_size);
 
     // 从文件中读取密文
     char encrypted[1024];
@@ -51,6 +62,7 @@ int main() {
 
     int count = 1000;
     char decrypted[rsa_size];
+    long long start = ustime();
     for (int i = 0; i < count; i++) {
         int ret = RSA_private_decrypt(len, encrypted, decrypted, rsa, /*RSA_PKCS1_PADDING*/RSA_PKCS1_OAEP_PADDING);
         if (ret <= 0) {
@@ -61,7 +73,8 @@ int main() {
             printf("decrypt len: %d\n", ret);
         }
     }
-
+    long long stop = ustime();
+    printf("cout: %d, elapsed: %lld, avg: %lld us/op\n", count, stop-start, (stop-start)/count);
     RSA_free(rsa);
     
 }
