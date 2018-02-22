@@ -15,6 +15,8 @@ int futex(int *uaddr, int op, int val,
 
 int fu = 0;
 
+long long int starttime;
+
 static unsigned long long nstime(void) {
     struct timespec ts;
     clock_gettime(CLOCK_REALTIME_COARSE, &ts);
@@ -26,7 +28,8 @@ static void *worker_loop(void *arg) {
     ts.tv_sec = 3;
     ts.tv_nsec = 0;
     futex(&fu, FUTEX_WAIT, 0, &ts, NULL, 0);
-    printf("worker time: %llu\n", nstime());
+    // printf("worker time: %llu\n", nstime());
+    printf("diff ns: %lld\n", nstime()-starttime);
     return NULL;
 }
 
@@ -38,7 +41,8 @@ int main() {
         return -1;
     }
     sleep(2);
-    printf("main time: %llu\n", nstime());
+    // printf("main time: %llu\n", nstime());
+    starttime = nstime();
     futex(&fu, FUTEX_WAKE, 1, NULL, NULL, 0);
     sleep(2);
     return 0;
@@ -46,5 +50,8 @@ int main() {
 // chuqq@chuqq-hp:~/temp/codeeveryday/c/20180209_futex$ ./a.out 
 // main time: 1518142828234522880
 // worker time: 1518142828234522880
+// lubuntu@virtualbox
+// > ./a.out
+// diff ns: 0
 // 结论：这个速度比pthread_cond_signal快很多
 

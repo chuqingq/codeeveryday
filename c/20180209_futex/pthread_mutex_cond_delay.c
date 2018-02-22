@@ -1,37 +1,40 @@
-// gcc pthread_mutex_cond_sample.c -O0 -pthread
+// gcc pthread_cond_delay.c -O0 -pthread
 // strace ./a.out
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <sys/time.h>
 
 #include <time.h>
 #include <unistd.h>
 
 static unsigned long long nstime(void) {
     struct timespec ts;
-    // long long ust;
-
     clock_gettime(CLOCK_REALTIME, &ts);
-    // ust = ((long)tv.tv_sec)*1000000;
-    // ust += tv.tv_usec;
-    // return ust;
     return ((unsigned long long)ts.tv_sec)*1000000000 + ts.tv_nsec;
+}
+
+
+static long long ustime(void) {
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    return ((long)tv.tv_sec)*1000000 + tv.tv_usec;
 }
 
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
 
-
-// int a = 0;
+long long int starttime;
 
 void* testThreadPool(int *t) {
-	printf("thread start: %d\n", *t);
+	// printf("thread start: %d\n", *t);
 	for (;;) {
 		// pthread_mutex_lock(&mutex);
 		pthread_cond_wait(&cond, &mutex);
-		printf("pthread_cond_wait time: %llu\n", nstime());
+		// printf("pthread_cond_wait time: %llu\n", nstime());
+		printf("diff ns: %lld\n", nstime()-starttime);
 		pthread_mutex_unlock(&mutex);
 		// sleep(3);
 	}
@@ -53,10 +56,11 @@ int main() {
 		}
 	}
 
-	sleep(2);
+	sleep(20);
 
 	for (t = 0; t < thread_num; t++) {
-		printf("pthread_cond_signal time: %llu\n", nstime());
+		// printf("pthread_cond_signal time: %llu\n", nstime());
+		starttime = nstime();
 		// a = t;
 		pthread_cond_signal(&cond);
 		// pthread_mutex_unlock(&mutex);
@@ -65,13 +69,10 @@ int main() {
 
 	sleep(2);
 }
-// 验证pthread_cond_signal唤醒线程需要多久
-// chuqq@chuqq-hp:~/temp/codeeveryday/c/20171010_pthread_mutex_cond$ ./a.out 
-// thread start: 0
-// pthread_cond_signal time: 1518140277785214707
-// pthread_cond_wait time: 1518140277785270798
-// chuqq@chuqq-hp:~/temp/codeeveryday/c/20171010_pthread_mutex_cond$ ./a.out 
-// thread start: 0
-// pthread_cond_signal time: 1518140306485181135
-// pthread_cond_wait time: 1518140306485249478
-// 结论：大约50～60us
+// 验证pthread_cond_signal唤醒线程需要多久：大约40~50us
+// chuqq-mbpr:
+// > ./a.out
+// diff ns: 45000
+// virtualbox:
+// > ./a.out
+// diff ns: 141776
