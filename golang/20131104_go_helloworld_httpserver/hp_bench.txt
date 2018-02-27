@@ -16,6 +16,20 @@ real	0m20.136s
 user	0m17.436s
 sys	1m0.840s
 
+# top2 wrk->netty: 55w
+Running 20s test @ http://127.0.0.1:5656/
+  4 threads and 100 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     3.91ms    8.77ms 193.62ms   91.87%
+    Req/Sec   139.23k    40.79k  211.19k    65.37%
+  11093368 requests in 20.08s, 528.97MB read
+Requests/sec: 552399.47
+Transfer/sec:     26.34MB
+
+real	0m20.092s
+user	0m10.505s
+sys	0m45.096s
+
 # top1 wrk -> fasthttp: 40w
 
 $ time ./wrk -c 100 -d 20 -t 4 http://127.0.0.1:8081/
