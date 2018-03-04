@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>请输入学号获取年度图书报告</title>
+</head>
+<body>
+	请输入学号：<input type="text" id="id">
+	<p>
+	<input type="button" id="query" value="获取图书年度报告">
+	<p>
+	报告：
+	<input type="text" id="report" value=""/>
+	<script src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript">
+		$('#query').click(function() {
+			console.log('query clicked');
+			$.get('http://127.0.0.1:8080/library_annual_report/query?id='+$('#id').val(), function(res) {
+				console.log('res: ', res);
+				$('#report').val(res);
+			});
+		});
+	</script>
+</body>
+</html>
