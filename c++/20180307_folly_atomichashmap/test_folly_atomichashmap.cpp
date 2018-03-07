@@ -1,4 +1,6 @@
 // g++ -std=c++14 -Ifolly_bin/include -Lfolly_bin/lib test.cpp -lfolly -lglog -ldl -ldouble-conversion -pthread
+// 静态链接 g++ -g -O3 -std=c++14 -Ifolly_bin/include test.cpp -Lfolly_bin/lib -lfolly -static-libgcc -static-libstdc++ -Wl,-Bstatic -lglog -lgflags -ldouble-conversion -Wl,-Bdynamic -lunwind -ldl -ldouble-conversion -pthread
+// g++ -g -O3 -std=c++14 -Ifolly_bin/include test.cpp -Lfolly_bin/lib -lfolly  -static-libstdc++ -Wl,-Bstatic -ldouble-conversion -lglog -lgflags -lunwind -llzma -Wl,-Bdynamic -ldl  -pthread
 
 #include <folly/AtomicHashMap.h>
 
