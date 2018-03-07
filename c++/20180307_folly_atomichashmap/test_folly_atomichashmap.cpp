@@ -199,6 +199,7 @@ void *loop_get_device_token(void *arg)
         device_key_t device_key;
         device_key.ip = (uint32_t)key;
         device_key.port = (uint16_t)key;
+        device_key.unused = 0;
         // device_t *retv = NULL;
         // int ret = atomic_hash_get(dict_device, &device_key, sizeof(device_key_t), NULL, &retv);
         // if (ret != 0 || retv == NULL)
