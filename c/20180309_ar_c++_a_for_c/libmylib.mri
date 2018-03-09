@@ -1,0 +1,11 @@
+create libmylib.a
+addlib folly_bin/lib/libfolly.a
+addlib ./libstdcxx.a
+addlib /usr/lib/x86_64-linux-gnu/libdouble-conversion.a
+addlib /usr/lib/x86_64-linux-gnu/libglog.a
+addlib /usr/lib/x86_64-linux-gnu/libgflags.a
+addlib /usr/lib/x86_64-linux-gnu/libunwind.a
+addlib /usr/lib/x86_64-linux-gnu/liblzma.a
+save
+end
+
