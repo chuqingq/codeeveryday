@@ -1,4 +1,4 @@
-// gcc futex_sample.c -pthread
+// gcc -O3 futex_sample.c -pthread
 #include <stdio.h>
 #include <linux/futex.h>
 #include <sys/syscall.h>
@@ -19,7 +19,7 @@ long long int starttime;
 
 static unsigned long long nstime(void) {
     struct timespec ts;
-    clock_gettime(CLOCK_REALTIME_COARSE, &ts);
+    clock_gettime(CLOCK_REALTIME, &ts);
     return ((unsigned long long)ts.tv_sec)*1e9 + ts.tv_nsec;
 }
 
@@ -40,11 +40,12 @@ int main() {
         perror("pthread_create error");
         return -1;
     }
-    sleep(2);
+    sleep(1);
     // printf("main time: %llu\n", nstime());
     starttime = nstime();
     futex(&fu, FUTEX_WAKE, 1, NULL, NULL, 0);
-    sleep(2);
+    // sleep(2);
+    pthread_join(worker_tid, NULL);
     return 0;
 }
 // chuqq@chuqq-hp:~/temp/codeeveryday/c/20180209_futex$ ./a.out 
@@ -55,3 +56,21 @@ int main() {
 // diff ns: 0
 // 结论：这个速度比pthread_cond_signal快很多
 
+/*
+chuqq@chuqq:~/work/codeeveryday/c/20180209_futex$ ./a.out
+diff ns: 22016
+chuqq@chuqq:~/work/codeeveryday/c/20180209_futex$ ./a.out
+diff ns: 83456
+chuqq@chuqq:~/work/codeeveryday/c/20180209_futex$ ./a.out
+diff ns: 25088
+chuqq@chuqq:~/work/codeeveryday/c/20180209_futex$ ./a.out
+diff ns: 22272
+chuqq@chuqq:~/work/codeeveryday/c/20180209_futex$ ./a.out
+diff ns: 20224
+chuqq@chuqq:~/work/codeeveryday/c/20180209_futex$ ./a.out
+diff ns: 147200
+chuqq@chuqq:~/work/codeeveryday/c/20180209_futex$ ./a.out
+diff ns: 14080
+结论：大约20us，并不比pthread_cond_signal快很多。
+前面是因为用了_COARSE，统计的时间不准
+*/
