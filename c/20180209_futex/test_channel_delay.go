@@ -40,4 +40,21 @@ func main() {
 //  go run test_channel_delay.go
 // 2018/02/22 19:29:26 starting...
 // 2018/02/22 19:29:28 diff ns: 143253
-// 结论：大约100us左右
+/*
+chuqq@chuqq:~/work/codeeveryday/c/20180209_futex$ ./test_channel_delay
+2018/03/10 12:39:30 starting...
+2018/03/10 12:39:32 diff ns: 13436
+chuqq@chuqq:~/work/codeeveryday/c/20180209_futex$ ./test_channel_delay
+2018/03/10 12:39:35 starting...
+2018/03/10 12:39:37 diff ns: 24344
+chuqq@chuqq:~/work/codeeveryday/c/20180209_futex$ ./test_channel_delay
+2018/03/10 12:39:40 starting...
+2018/03/10 12:39:42 diff ns: 33013
+chuqq@chuqq:~/work/codeeveryday/c/20180209_futex$ ./test_channel_delay
+2018/03/10 12:39:45 starting...
+2018/03/10 12:39:47 diff ns: 12233
+chuqq@chuqq:~/work/codeeveryday/c/20180209_futex$ ./test_channel_delay
+2018/03/10 12:39:50 starting...
+2018/03/10 12:39:52 diff ns: 13538
+*/
+// 结论：大约20us左右，和pthread_cond_x以及futex差不多
