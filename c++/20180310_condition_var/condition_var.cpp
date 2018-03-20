@@ -26,10 +26,10 @@ bool processed = false;
 void worker_thread()
 {
     // Wait until main() sends data
-    // std::unique_lock<std::mutex> lk(m);
-    std::mutex * lk = &m;
-    // cv.wait(lk, []{return ready;});
-    cv.wait(lk);
+    std::unique_lock<std::mutex> lk(m);
+    // std::mutex * lk = &m;
+    cv.wait(lk/*, []{return ready;}*/);
+    // cv.wait(lk);
     std::cout << "worker: " << nstime() - starttime << std::endl;
  
     // after the wait, we own the lock.
@@ -37,7 +37,7 @@ void worker_thread()
     // data += " after processing";
  
     // Send data back to main()
-    // processed = true;
+    processed = true;
     // std::cout << "Worker thread signals data processing completed\n";
  
     // Manual unlocking is done before notifying, to avoid waking up
@@ -54,16 +54,16 @@ int main()
  
     // data = "Example data";
     // send data to the worker thread
-    {
+    // {
         // std::lock_guard<std::mutex> lk(m);
         // ready = true;
         // std::cout << "main() signals data ready for processing\n";
-        starttime = nstime();
-        m.unlock();
-    }
-    // starttime = nstime();
+        // starttime = nstime();
+        // m.unlock();
+    // }
     // std::cout << "main: " << starttime << std::endl;    
-    // sleep(3);
+    sleep(1);
+    starttime = nstime();
     cv.notify_one();
  
     // wait for the worker
