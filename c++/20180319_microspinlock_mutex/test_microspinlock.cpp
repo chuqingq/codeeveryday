@@ -18,7 +18,7 @@ int main() {
         std::cout << "elapsed: " << std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start).count() << " ns" << std::endl;
     });
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(9000));
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
     start = std::chrono::steady_clock::now();
     lock.unlock();

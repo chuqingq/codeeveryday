@@ -11,9 +11,9 @@ int main() {
   std::time_t start_c = std::chrono::system_clock::to_time_t(start);
   std::cout << "start: " << std::put_time(std::localtime(&start_c), "%F %T") << std::endl;
   */
-  std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
+  auto start = std::chrono::steady_clock::now();
   // std::cout << "Hello World\n";
-  std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+  auto end = std::chrono::steady_clock::now();
   std::cout << "Printing took "
             << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()
             << "us.\n";

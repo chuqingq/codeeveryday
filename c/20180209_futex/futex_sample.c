@@ -73,4 +73,18 @@ chuqq@chuqq:~/work/codeeveryday/c/20180209_futex$ ./a.out
 diff ns: 14080
 结论：大约20us，并不比pthread_cond_signal快很多。
 前面是因为用了_COARSE，统计的时间不准
+
+验证环境：chuqq@hp
+chuqq@chuqq-hp:~/temp/codeeveryday/c/20180209_futex$ ./a.out 
+diff ns: 36864
+chuqq@chuqq-hp:~/temp/codeeveryday/c/20180209_futex$ ./a.out 
+diff ns: 37120
+chuqq@chuqq-hp:~/temp/codeeveryday/c/20180209_futex$ ./a.out 
+diff ns: 37120
+chuqq@chuqq-hp:~/temp/codeeveryday/c/20180209_futex$ ./a.out 
+diff ns: 36352
+chuqq@chuqq-hp:~/temp/codeeveryday/c/20180209_futex$ ./a.out 
+diff ns: 36608
+chuqq@chuqq-hp:~/temp/codeeveryday/c/20180209_futex$ ./a.out 
+diff ns: 37376
 */
