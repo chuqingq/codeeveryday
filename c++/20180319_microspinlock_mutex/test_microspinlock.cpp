@@ -18,7 +18,7 @@ int main() {
         std::cout << "elapsed: " << std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start).count() << " ns" << std::endl;
     });
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    std::this_thread::sleep_for(std::chrono::milliseconds(0));
 
     start = std::chrono::steady_clock::now();
     lock.unlock();
@@ -28,4 +28,20 @@ int main() {
 }
 
 /*
+chuqq@chuqq-hp ~/t/c/c/20180319_microspinlock_mutex> ./a.out 
+elapsed: 37907 ns
+chuqq@chuqq-hp ~/t/c/c/20180319_microspinlock_mutex> ./a.out 
+elapsed: 41949 ns
+chuqq@chuqq-hp ~/t/c/c/20180319_microspinlock_mutex> ./a.out 
+elapsed: 36762 ns
+chuqq@chuqq-hp ~/t/c/c/20180319_microspinlock_mutex> ./a.out 
+elapsed: 38443 ns
+chuqq@chuqq-hp ~/t/c/c/20180319_microspinlock_mutex> ./a.out 
+elapsed: 36762 ns
+chuqq@chuqq-hp ~/t/c/c/20180319_microspinlock_mutex> ./a.out 
+elapsed: 37700 ns
+chuqq@chuqq-hp ~/t/c/c/20180319_microspinlock_mutex> ./a.out 
+elapsed: 36431 ns
+chuqq@chuqq-hp ~/t/c/c/20180319_microspinlock_mutex> ./a.out 
+elapsed: 36932 ns
 */
