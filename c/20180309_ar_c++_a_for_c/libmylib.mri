@@ -1,5 +1,5 @@
 create libmylib.a
-addlib folly_bin/lib/libfolly.a
+addlib /home/chuqq/temp/folly/folly_bin/lib/libfolly.a
 addlib ./libstdcxx.a
 addlib /usr/lib/x86_64-linux-gnu/libdouble-conversion.a
 addlib /usr/lib/x86_64-linux-gnu/libglog.a
