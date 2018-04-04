@@ -30,7 +30,8 @@ void worker_thread()
     // std::mutex * lk = &m;
     cv.wait(lk/*, []{return ready;}*/);
     // cv.wait(lk);
-    std::cout << "worker: " << nstime() - starttime << std::endl;
+    auto stoptime = nstime();
+    std::cout << "worker: " << stoptime - starttime << std::endl;
  
     // after the wait, we own the lock.
     // std::cout << "Worker thread is processing data\n";
@@ -71,7 +72,8 @@ int main()
         std::unique_lock<std::mutex> lk(m);
         cv.wait(lk, []{return processed;});
     }
-    std::cout << "main: " << nstime() - starttime << std::endl;
+    auto stoptime = nstime();
+    std::cout << "main: " << stoptime - starttime << std::endl;
     // std::cout << "Back in main(), data = " << data << '\n';
  
     worker.join();

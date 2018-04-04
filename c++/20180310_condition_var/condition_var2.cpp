@@ -1,3 +1,5 @@
+// g++ condition_var2.cpp -O3 -std=c++11 -lpthread
+
 #include <iostream>                // std::cout
 #include <thread>                // std::thread
 #include <mutex>                // std::mutex, std::unique_lock
