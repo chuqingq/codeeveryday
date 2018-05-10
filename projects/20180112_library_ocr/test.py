@@ -13,7 +13,7 @@ def get_file_content(filePath):
     with open(filePath, 'rb') as fp:
         return fp.read()
 
-image = get_file_content('1.jpg')
+image = get_file_content('11.jpg')
 imagebase64 = base64.b64encode(image)
 print(len(imagebase64))
 
@@ -29,7 +29,8 @@ options = {}
 
 """ 带参数调用通用文字识别, 图片参数为本地图片 """
 # client.basicGeneral(image, options)
-retbig = client.accurate(image, options)
+#retbig = client.accurate(image, options)
+retbig = client.general(image, options)
 print(retbig)
 
 res = ''

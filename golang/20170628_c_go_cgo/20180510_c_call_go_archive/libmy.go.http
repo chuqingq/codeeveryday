@@ -1,0 +1,15 @@
+package main
+
+import "net/http"
+import "C"
+
+//export Hello
+func Hello() {
+        http.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
+            w.Write([]byte("hello world"))
+        })
+        http.ListenAndServe(":8080", nil)
+}
+
+func main() {
+}
