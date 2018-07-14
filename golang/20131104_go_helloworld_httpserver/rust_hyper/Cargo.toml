@@ -1,0 +1,8 @@
+[package]
+name = "rust_hyper"
+version = "0.1.0"
+authors = ["chuqq <chuqingq@qq.com>"]
+
+[dependencies]
+hyper = "0.12"
+

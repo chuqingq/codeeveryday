@@ -1,0 +1,8 @@
+[package]
+name = "rust_iron"
+version = "0.1.0"
+authors = ["chuqq <chuqingq@qq.com>"]
+
+[dependencies]
+iron = "0.6.*"
+
