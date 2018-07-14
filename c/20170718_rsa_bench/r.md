@@ -1,3 +1,7 @@
+# deps/openssl
+
+../../golang/20170105_go_rsa/c_rsa/deps.tar.gz
+
 # openssl generate private and public key
 
 ```
