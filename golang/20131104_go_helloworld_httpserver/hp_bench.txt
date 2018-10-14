@@ -139,3 +139,9 @@ Running 20s test @ http://127.0.0.1:10000
 Requests/sec: 322890.33
 Transfer/sec:     38.80MB
 
+# fasthttp -> proxygen echo: 3.6w
+
+ubuntu@mbpr
+fasthttp_server: 18.5w
+代码有优化
+
