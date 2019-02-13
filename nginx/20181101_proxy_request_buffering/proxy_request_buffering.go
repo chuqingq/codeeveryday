@@ -1,15 +1,18 @@
 package main
 
 import (
-    "net/http"
+        "net/http"
 	"fmt"
 	"log"
+	"io/ioutil"
 )
 
 var response = []byte("hello world")
 
 func HandleFunc(res http.ResponseWriter, req * http.Request) {
     log.Printf("HandleFunc()")
+    body, err := ioutil.ReadAll(req.Body)
+    log.Printf("body: %v, %v", string(body), err)
     res.Write(response)
 }
 
@@ -38,17 +41,19 @@ nginx配置：
 
 验证：
 
-场景1：开启proxy_request_buffering的场景。结果：敲完67890后的回车才结束。
+场景1：默认开启proxy_request_buffering的场景。结果：敲完67890后的回车upstream才打印HandleFunc()。也就是敲完67890后的回车nginx才把完整的请求转发到upstream。
 
-GET /proxy_request_buffering_on HTTP/1.1
+POST /proxy_request_buffering_on HTTP/1.1
 Host: 127.0.0.1
 Content-Length: 12
 
 12345
 67890
 
-场景2：关闭proxy_request_buffering。结果：在敲Content-Length后第二个回车后就结束了。因为都到HandleFunc，直接返回响应了
-GET /proxy_request_buffering_off HTTP/1.1
+场景2：关闭proxy_request_buffering。结果：在敲Content-Length后第二个回车后就打印HandleFunc()了。也就是从头域结束nginx就把请求转到upstream了
+。
+
+POST /proxy_request_buffering_off HTTP/1.1
 Host: 127.0.0.1
 Content-Length: 12
 
