@@ -1,9 +1,0 @@
-ldd -r test_gcc_static:
-	not a dynamic executable
-ldd -r test_gcc_nostatic;
-	linux-vdso.so.1 =>  (0x00007fff58ffc000)
-	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007ff784770000)
-	/lib64/ld-linux-x86-64.so.2 (0x00007ff784b4d000)
-ls -l test_gcc_{,no}static
--rwxrwxr-x 1 chuqq chuqq   8560  2月 23 12:24 test_gcc_nostatic
--rwxrwxr-x 1 chuqq chuqq 881096  2月 23 12:24 test_gcc_static

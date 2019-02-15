@@ -1,4 +1,0 @@
-probe begin {
-    printf("hello world...\n")
-}
-
