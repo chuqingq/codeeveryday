@@ -1,0 +1,9 @@
+[package]
+name = "mylib2"
+version = "0.1.0"
+authors = ["chuqq"]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
