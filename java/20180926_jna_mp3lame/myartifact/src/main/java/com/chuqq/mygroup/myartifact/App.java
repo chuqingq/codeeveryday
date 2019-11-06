@@ -10,6 +10,13 @@ import com.sun.jna.Pointer;
  */
 public class App {
 	public static void main(String[] args) throws Exception {
+		byte[] a = new byte[]{100, 101, 1,0,2};
+		String b = new String(a, "utf-8");
+		System.out.println(b.length());
+		System.out.println("==" + b + "--");
+	}
+
+	public static void main2(String[] args) throws Exception {
 		System.out.println("main()");
 
 		InputStream in = new FileInputStream("7.5depingfangshiduoshao.pcm");
