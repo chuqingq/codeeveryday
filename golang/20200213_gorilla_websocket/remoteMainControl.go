@@ -1,12 +1,11 @@
 package main
 
 import (
-	"net/http"
 	"log"
+	"net/http"
 
 	"github.com/gorilla/websocket"
 )
-
 
 func main() {
 	// 启动HTTP服务
@@ -36,7 +35,7 @@ func agentHandler(w http.ResponseWriter, r *http.Request) {
 		log.Printf("recv: %s", msg)
 
 		// 恢复响应
-		res := &MainControlMsg {
+		res := &MainControlMsg{
 			Cmd: "register ok",
 		}
 		err = c.WriteJSON(res)
@@ -50,5 +49,5 @@ func agentHandler(w http.ResponseWriter, r *http.Request) {
 type MainControlMsg struct {
 	Cmd string
 	Key string
-	IP string
+	IP  string
 }

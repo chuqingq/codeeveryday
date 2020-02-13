@@ -1,10 +1,10 @@
 package main
 
 import (
-	"strings"
 	"log"
-    "net"
-    "time"
+	"net"
+	"strings"
+	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -30,23 +30,23 @@ func main() {
 	}
 	log.Printf("recv msg: %v", msg)
 
-    msg, err = conn.Recv()
-    if err != nil {
-        log.Printf("recv error: %v", err)
-        return
-    }
-    log.Printf("recv msg: %v", msg)
+	msg, err = conn.Recv()
+	if err != nil {
+		log.Printf("recv error: %v", err)
+		return
+	}
+	log.Printf("recv msg: %v", msg)
 }
 
 type MainControlConn struct {
-	url string
+	url    string
 	wsConn *websocket.Conn
 }
 
 type MainControlMsg struct {
 	Cmd string
 	Key string
-	IP string
+	IP  string
 }
 
 func ConnectAndRegisterToMainControl(url string, mykey string) (*MainControlConn, error) {
@@ -56,16 +56,16 @@ func ConnectAndRegisterToMainControl(url string, mykey string) (*MainControlConn
 	}
 
 	c := &MainControlConn{
-		url: url,
+		url:    url,
 		wsConn: wsConn,
 	}
 
 	// TCP keepalive
 	netConn := wsConn.UnderlyingConn()
 	tcpConn, ok := netConn.(*net.TCPConn)
-    if !ok {
-        log.Printf("keepalive error: %v", err)
-    }
+	if !ok {
+		log.Printf("keepalive error: %v", err)
+	}
 	err = tcpConn.SetKeepAlive(true)
 	if err != nil {
 		wsConn.Close()
@@ -81,10 +81,10 @@ func ConnectAndRegisterToMainControl(url string, mykey string) (*MainControlConn
 	localAddr := wsConn.LocalAddr().String()
 	ip := strings.Split(localAddr, ":")[0]
 	log.Printf("local ip: %v", ip)
-	msg := &MainControlMsg {
+	msg := &MainControlMsg{
 		Cmd: "register",
 		Key: mykey,
-		IP: ip,
+		IP:  ip,
 	}
 	err = c.Send(msg)
 	if err != nil {
@@ -114,7 +114,7 @@ func (c *MainControlConn) Recv() (*MainControlMsg, error) {
 }
 
 func (c *MainControlConn) Close() error {
-	// TODO? 
+	// TODO?
 	c.wsConn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
 	return c.wsConn.Close()
 }
