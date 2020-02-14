@@ -11,7 +11,7 @@ import (
 
 func main() {
 	// 连接mainControl
-	url := "ws://192.168.1.111:8080/agent"
+	url := "ws://127.0.0.1:8080/agent"
 	mykey := "chuqingqing13"
 	conn, err := ConnectAndRegisterToMainControl(url, mykey)
 	if err != nil {
