@@ -2,16 +2,14 @@ package main
 
 import (
 	"log"
-	"net"
 	"strings"
-	"time"
 
 	"github.com/gorilla/websocket"
 )
 
 func main() {
 	// 连接mainControl
-	url := "ws://192.168.1.111:8080/agent"
+	url := "ws://192.168.1.102:8080/agent"
 	mykey := "chuqingqing13"
 	conn, err := ConnectAndRegisterToMainControl(url, mykey)
 	if err != nil {
@@ -61,21 +59,23 @@ func ConnectAndRegisterToMainControl(url string, mykey string) (*MainControlConn
 	}
 
 	// TCP keepalive
-	netConn := wsConn.UnderlyingConn()
-	tcpConn, ok := netConn.(*net.TCPConn)
-	if !ok {
-		log.Printf("keepalive error: %v", err)
-	}
-	err = tcpConn.SetKeepAlive(true)
-	if err != nil {
-		wsConn.Close()
-		return nil, err
-	}
-	err = tcpConn.SetKeepAlivePeriod(2 * time.Minute)
-	if err != nil {
-		wsConn.Close()
-		return nil, err
-	}
+	/*
+		netConn := wsConn.UnderlyingConn()
+		tcpConn, ok := netConn.(*net.TCPConn)
+		if !ok {
+			log.Printf("keepalive error: %v", err)
+		}
+		err = tcpConn.SetKeepAlive(true)
+		if err != nil {
+			wsConn.Close()
+			return nil, err
+		}
+		err = tcpConn.SetKeepAlivePeriod(2 * time.Minute)
+		if err != nil {
+			wsConn.Close()
+			return nil, err
+		}
+	*/
 
 	// 注册
 	localAddr := wsConn.LocalAddr().String()
