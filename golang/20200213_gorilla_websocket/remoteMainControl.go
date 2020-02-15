@@ -103,3 +103,5 @@ func metisWebHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Write([]byte(msg.IP))
 }
+
+// 用 curl "http://localhost:8080/metisweb?key=chuqingqin13" 来
