@@ -31,6 +31,8 @@ model.compile(optimizer=tf.keras.optimizers.Adam(0.01),
 # fit
 model.fit(x_data, y_data, epochs=10, batch_size=32)
 
+model.save('my_model.h5')
+
 # predict 预计结果是 0.5*2.5+0.8=2.05
 data = [[0.5]]
 res = model.predict(data)
