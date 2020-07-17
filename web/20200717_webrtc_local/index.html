@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <style>
+    </style>
+    <title>Document</title>
+	<script type="text/javascript">
+	/* eslint-env browser */
+var error = msg => {
+	console.log('error: ', msg);
+}
+
+var offer;
+var answer;
+
+var caller_pc = new RTCPeerConnection()
+var callee_pc = new RTCPeerConnection()
+
+// addIceCandidate
+caller_pc.onicecandidate = e => {
+	console.log('caller.onicecandidate: ', e.candidate);
+	if (e.candidate === null) return;
+	callee_pc.addIceCandidate(new RTCIceCandidate(e.candidate))
+	.then(() => console.log('callee_pc.addIceCandidate ok'))
+	.catch(error)
+}
+callee_pc.onicecandidate = e => {
+	console.log('callee.onicecandidate: ', e.candidate);
+	if (e.candidate === null) return;
+	caller_pc.addIceCandidate(new RTCIceCandidate(e.candidate))
+	.then(() => console.log('caller_pc.addIceCandidate ok'))
+	.catch(error)
+}
+// caller_pc.onsignalingstatechange = (event) => console.log('caller state change: ', event.currentTarget.signalingState);
+
+callee_pc.onaddstream = stream => {
+	console.log('callee.onaddstream')
+	var el = document.getElementById('video2')
+	el.srcObject = stream.stream
+	el.autoplay = true
+	el.controls = true
+}
+
+// getUserMedia
+navigator.mediaDevices.getUserMedia({
+  video: true,
+  audio: false
+})
+.then(stream => {
+	document.getElementById('video1').srcObject = stream
+	caller_pc.addStream(stream)
+	// caller_pc.addStream(stream)
+	return caller_pc.createOffer()
+})
+.then(offer => {
+	caller_pc.setLocalDescription(new RTCSessionDescription(offer), () => console.log('caller_pc.setLocalDescription ok'), error)
+	return callee_pc.setRemoteDescription(new RTCSessionDescription(offer))
+})
+.then(() => {
+	console.log('callee_pc.setRemoteDescription ok ')
+	return callee_pc.createAnswer()
+})
+.then(answer => {
+	console.log('callee.createAnswer: ', answer)
+	callee_pc.setLocalDescription(new RTCSessionDescription(answer), () => console.log('callee_pc.setLocalDescription ok'), error)
+	return caller_pc.setRemoteDescription(new RTCSessionDescription(answer))
+})
+.then(() => {
+	console.log('caller_pc.setRemoteDescription ok')
+})
+.catch(error)
+
+	</script>
+  </head>
+  <body>
+	<div id="signalingContainer" style="display: none">
+	  Browser base64 Session Description<br />
+	  <textarea id="localSessionDescription" readonly="true"></textarea> <br />
+
+	  Golang base64 Session Description<br />
+	  <textarea id="remoteSessionDescription"></textarea> <br/>
+	  <button onclick="window.startSession()"> Start Session </button><br />
+	</div>
+
+	<br />
+
+	Video<br />
+	<video id="video1" width="400" height="300" autoplay muted></video> 
+	<video id="video2" width="400" height="300" autoplay muted></video> <br />
+
+	<button class="createSessionButton" onclick="window.caller()"> caller</button>
+	<button class="createSessionButton" onclick="window.callee()"> callee </button><br />
+
+	<br />
+
+	Logs<br />
+	<div id="logs"></div>
+
+  </body>
+</html>

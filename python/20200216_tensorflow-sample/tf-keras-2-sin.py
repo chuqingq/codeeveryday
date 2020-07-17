@@ -15,8 +15,8 @@ model = tf.keras.Sequential([
     # Adds a densely-connected layer with 64 units to the model:
     layers.Dense(64, activation='relu', input_shape=(1,)),
     # Add another:
-    layers.Dense(64, activation='relu'),
-    layers.Dense(64, activation='relu'),
+    layers.Dense(64),
+    layers.Dense(64),
     layers.Dense(64, activation='relu'),
     # Add an output layer with 10 output units:
     layers.Dense(1)
@@ -29,7 +29,7 @@ model.compile(optimizer=tf.keras.optimizers.Adam(0.01),
               metrics=['accuracy'])
 
 # fit
-model.fit(x_data, y_data, epochs=10, batch_size=32)
+model.fit(x_data, y_data, epochs=16, batch_size=32)
 
 model.save('my_model.h5')
 
