@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <style>
+    </style>
+    <title>Document</title>
+	<script src="/socket.io/socket.io.js"></script>
+	<script type="text/javascript">
+	/* eslint-env browser */
+var error = msg => {
+	console.log('error: ', msg);
+}
+
+let socket = io('http://192.168.31.69:8000');
+
+var pc = new RTCPeerConnection()
+pc.onicecandidate = e => {
+	console.log('pc.onicecandidate: ', e.candidate);
+	if (e.candidate === null) return;
+	socket.emit('candidate', e.candidate)
+}
+
+pc.onaddstream = stream => {
+	console.log('pc.onaddstream')
+	var el = document.getElementById('video2')
+	el.srcObject = stream.stream
+	el.autoplay = true
+	el.controls = true
+}
+
+socket.on('candidate', candidate => {
+	if (candidate != null) {
+		pc.addIceCandidate(new RTCIceCandidate(candidate))
+	}
+})
+
+function caller() {
+	console.log('caller')
+	navigator.mediaDevices.getUserMedia({
+		video: true,
+		audio: false
+	})
+	.then(stream => {
+		document.getElementById('video1').srcObject = stream
+		pc.addStream(stream)
+		// caller_pc.addStream(stream)
+		return pc.createOffer()
+	})
+	.then(offer => {
+		pc.setLocalDescription(new RTCSessionDescription(offer), () => console.log('caller_pc.setLocalDescription ok'), error)
+		socket.on('answer', answer => {
+			console.log('pc.setRemoteDescription')
+			pc.setRemoteDescription(new RTCSessionDescription(answer))
+		})
+		socket.emit('offer', offer)
+	})
+	.catch(error)
+}
+
+function callee() {
+	console.log('callee')
+	socket.on('offer', offer => {
+		console.log('ws recv offer')
+		pc.setRemoteDescription(new RTCSessionDescription(offer), () => console.log('caller_pc.setLocalDescription ok'), error)
+		pc.createAnswer()
+		.then(answer => {
+			console.log('pc.createAnswer')
+			pc.setLocalDescription(new RTCSessionDescription(answer), () => console.log('callee.setLocalDescription ok'), error)
+			socket.emit('answer', answer)
+		})
+		.catch(error)
+	})
+}
+
+	</script>
+  </head>
+  <body>
+	<div id="signalingContainer" style="display: none">
+	  Browser base64 Session Description<br />
+	  <textarea id="localSessionDescription" readonly="true"></textarea> <br />
+
+	  Golang base64 Session Description<br />
+	  <textarea id="remoteSessionDescription"></textarea> <br/>
+	  <button onclick="window.startSession()"> Start Session </button><br />
+	</div>
+
+	<br />
+
+	Video<br />
+	<video id="video1" width="400" height="300" autoplay muted></video> 
+	<video id="video2" width="400" height="300" autoplay muted></video> <br />
+
+	<button class="createSessionButton" onclick="caller()">投屏</button>
+	<button class="createSessionButton" onclick="callee()">接收投屏</button><br />
+
+	<br />
+
+	Logs<br />
+	<div id="logs"></div>
+
+  </body>
+</html>
