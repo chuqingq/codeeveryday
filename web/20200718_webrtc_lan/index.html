@@ -39,7 +39,7 @@ socket.on('candidate', candidate => {
 
 function caller() {
 	console.log('caller')
-	navigator.mediaDevices.getUserMedia({
+	navigator.mediaDevices.getDisplayMedia({
 		video: true,
 		audio: false
 	})
