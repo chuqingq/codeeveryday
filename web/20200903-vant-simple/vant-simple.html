@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0">
+
+  <!-- 引入样式文件 -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/vant@2.9/lib/index.css"
+  />
+</head>
+<body>
+<div id="app">
+
+</div>
+</body>
+  <!-- 引入 Vue 和 Vant 的 JS 文件 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vant@2.9/lib/vant.min.js"></script>
+  <script>
+  /*
+    // 调用函数组件，弹出一个 Toast
+    vant.Toast('提示');
+    
+    // 通过 CDN 引入时不会自动注册 Lazyload 组件
+    // 可以通过下面的方式手动注册
+    Vue.use(vant.Lazyload);
+	*/
+	
+	new Vue({
+      el: '#app',
+	  template: `<van-form @submit="onSubmit">
+  <van-field
+    v-model="username"
+    name="用户名"
+    label="用户名"
+    placeholder="用户名"
+    :rules="[{ required: true, message: '请填写用户名' }]"
+  />
+  <van-field
+    v-model="password"
+    type="password"
+    name="密码"
+    label="密码"
+    placeholder="密码"
+    :rules="[{ required: true, message: '请填写密码' }]"
+  />
+  <div style="margin: 16px;">
+    <van-button round block type="info" native-type="submit">
+      提交
+    </van-button>
+  </div>
+</van-form>`,
+	  data() {
+		return {
+		  username: '',
+		  password: '',
+		};
+	  },
+	  methods: {
+		onSubmit(values) {
+		  console.log('submit', values);
+		},
+	  },
+    })
+	
+  </script>
+</html>
