@@ -1,0 +1,21 @@
+<html>  
+    <head>  
+        <script type="text/javascript" src="./bundle.js"></script>  
+    </head>  
+  
+    <body>  
+  
+        <button onclick="">1111</button>  
+        <script>  
+var message = new proto.mypackage.myMessage();  
+message.setMyValue(20);  
+var bytes = message.serializeBinary();  
+console.log('bytes:', bytes);  
+  
+var data = proto.mypackage.myMessage.deserializeBinary(bytes);  
+console.log('data: ', data);  
+console.log('myvalue: ', data.getMyValue());  
+console.log('myvalue2: ', data.getMyValue2());
+        </script>  
+    </body>  
+</html>  

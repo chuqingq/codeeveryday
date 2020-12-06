@@ -1,0 +1,6 @@
+syntax = "proto3";  
+package mypackage;  
+message myMessage {  
+    int32 my_value =  1;  
+	int32 my_value2 = 2;
+} 
