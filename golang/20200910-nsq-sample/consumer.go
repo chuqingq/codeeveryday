@@ -34,7 +34,7 @@ func processMessage(b []byte) error {
 func main() {
 	// Instantiate a consumer that will subscribe to the provided channel.
 	config := nsq.NewConfig()
-	consumer, err := nsq.NewConsumer("topic", "channel", config)
+	consumer, err := nsq.NewConsumer("topic#ab", "channel", config) // 不支持通配符，topic*，topic.*，topic#abc，topic/abc
 	if err != nil {
 		log.Fatal(err)
 	}
