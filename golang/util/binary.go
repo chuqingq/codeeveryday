@@ -12,3 +12,5 @@ func InterfaceToBinaryBytes(vs ...interface{}) []byte {
 	}
 	return b.Bytes()
 }
+
+// TODO from?
