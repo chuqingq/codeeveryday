@@ -1,0 +1,189 @@
+{
+    "loglevel": 1,
+    "Comm": {
+      "Addr": "127.0.0.1:8080",
+      "CertPath": "certs/",
+      "ServerKeyFile": "certs/server.key",
+      "ServerCertFile": "certs/server.cer",
+      "CaFile": "certs/ca.cer"
+    },
+    "Cloud": {
+      "URL": "ws://127.0.0.1:8081/",
+      "Comm": {
+        "Addr": "127.0.0.1:8080",
+        "KeyFile": "certs/client.key",
+        "CertFile": "certs/client.cer",
+        "CaFile": "certs/ca.cer"
+      }
+    },
+    "IMCM": {
+        "BaseInfo": {
+            "Firmware": "",
+            "Id": "",
+            "Model": "",
+            "Protocol": ""
+        },
+        "Net": {
+            "CommunicationMode": 0,
+            "ComPort": "COM1",
+            "Timeout": 3,
+            "RetryTimes": 3,
+            "EnableFlag": 1,
+            "BaudRat": 115200,
+            "DataBit": 8,
+            "CheckBit": 0,
+            "StopBit": 1,
+            "FlowControl": 0
+        },
+        "RecordSet": {
+              "CloudFlag": 0,
+              "CloudState": 0,
+              "CloudUrl": "",
+              "IoDays": 100,
+              "Sn": "",
+              "TemperDays": 100,
+              "TemperInterval": 5,
+              "WarnDays": 100
+            },
+        "WorkParam": {
+              "AlarmConfig": {
+                "LinkageSpeaker_Config": {
+                  "Door1": 1,
+                  "Door2": 1,
+                  "FeedwatchdogError": 1,
+                  "Hfc227Ea": 1,
+                  "HumidityHigh": 1,
+                  "HumidityLow": 1,
+                  "Smoke": 1,
+                  "Switch1_Nc": 1,
+                  "Switch1_No": 1,
+                  "Switch2_Nc": 1,
+                  "Switch2_No": 1,
+                  "TemperError": 1,
+                  "TemperHigh": 1,
+                  "TemperLow": 1,
+                  "WatchdogPaused": 1
+                },
+                "SendAlarmInfo_Interval": 10
+              },
+              "DO_OUTWORK_Param": {
+                "ParamDO1": {
+                  "Timedelay_OFF": 3000,
+                  "Timedelay_ON": 0
+                },
+                "ParamDO2": {
+                  "Timedelay_OFF": 3000,
+                  "Timedelay_ON": 0
+                },
+                "ParamDO3": {
+                  "Timedelay_OFF": 0,
+                  "Timedelay_ON": 0
+                },
+                "ParamDO4": {
+                  "Timedelay_OFF": 0,
+                  "Timedelay_ON": 0
+                },
+                "ParamDO5": {
+                  "Timedelay_OFF": 0,
+                  "Timedelay_ON": 0
+                },
+                "ParamDO6": {
+                  "Timedelay_OFF": 0,
+                  "Timedelay_ON": 0
+                },
+                "ParamDO7": {
+                  "Timedelay_OFF": 0,
+                  "Timedelay_ON": 0
+                },
+                "ParamDO8": {
+                  "Timedelay_OFF": 0,
+                  "Timedelay_ON": 0
+                }
+              },
+              "DogConfig": {
+                "FeedDogInterval": 10,
+                "InitTimeout": 255,
+                "LinkedDO": 3
+              },
+              "Door": {
+                "ParamDI1": {
+                  "DI_Input_Overtime": 10,
+                  "DI_LinkedDO": 1,
+                  "DI_ValueOfACT": 1
+                },
+                "ParamDI2": {
+                  "DI_Input_Overtime": 10,
+                  "DI_LinkedDO": 1,
+                  "DI_ValueOfACT": 1
+                }
+              },
+              "FireAlarm": {
+                "ParamDI3": {
+                  "DI_FireAlarm_Input_Duration": 1,
+                  "DI_FireAlarm_LinkDO": 1,
+                  "DI_FireAlarm_ValueOfACT": 1
+                },
+                "ParamDI4": {
+                  "DI_FireAlarm_Input_Duration": 1,
+                  "DI_FireAlarm_LinkDO": 1,
+                  "DI_FireAlarm_ValueOfACT": 1
+                }
+              },
+              "Ring": {
+             
+              },
+              "TH_Adjust": {
+                "Adjust_H": 0,
+                "Adjust_T": 0
+              },
+              "TH_Work": {
+                "Humidity_LowerLimit": 200,
+                "Humidity_UpperLimit": 750,
+                "Report_Interval": 10,
+                "Sampling_Interval": 3,
+                "Temperature_LowerLimit": 0,
+                "Temperature_UpperLimit": 900
+              },
+              "Uart": {
+                "BaudRat": 8,
+                "CheckBit": 0,
+                "DataBit": 8,
+                "FlowControl": 0,
+                "StopBit": 0
+              }
+            }
+    },
+    "Network": {
+        "BaseNet": {
+            "SADPPort": 19801
+        }
+    },
+    "App":{
+        "AppList":[{
+                "Name":"车辆系统",
+                "Version":"1.0.0",
+                "Remark":"车辆管理",
+                "Identification": "car",
+                "Host":"127.0.0.1:13401",
+                "LoginFlag": 1,
+                "EnableState": 1
+            },
+            {
+               "Name":"人员系统",
+               "Version":"1.0.0",
+               "Remark":"人员管理",
+               "Identification": "staff",
+               "Host":"127.0.0.1:13402",
+               "LoginFlag": 1,
+               "EnableState": 1
+            },
+            {
+               "Name":"通道管理",
+               "Version":"1.0.0",
+               "Remark":"通道管理",
+               "Identification": "passageway",
+               "Host":"127.0.0.1:13402",
+               "LoginFlag": 1
+            }]
+    }
+}
