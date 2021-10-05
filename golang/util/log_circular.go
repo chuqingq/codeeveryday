@@ -1,6 +1,7 @@
 package util
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"sync"
@@ -46,5 +47,6 @@ func (c *circularLogger) Printf(format string, v ...interface{}) {
 		c.num = 0
 	}
 	c.Unlock()
-	c.Logger.Printf(format, v...)
+	s := fmt.Sprintf(format, v...)
+	c.Logger.Output(2, s)
 }
