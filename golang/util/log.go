@@ -58,8 +58,12 @@ func E() printfInterface {
 var empty *myLogger
 var logger *myLogger
 
+type PrintfI interface {
+	Printf(format string, v ...interface{})
+}
+
 type myLogger struct {
-	loggers []*log.Logger
+	loggers []PrintfI
 }
 
 func (m *myLogger) Printf(fmt string, v ...interface{}) {
@@ -68,9 +72,9 @@ func (m *myLogger) Printf(fmt string, v ...interface{}) {
 	}
 }
 
-func (m *myLogger) AppendLogger(logger ...*log.Logger) {
+func (m *myLogger) AppendLogger(logger ...PrintfI) {
 	if m.loggers == nil {
-		m.loggers = make([]*log.Logger, 0, 2)
+		m.loggers = make([]PrintfI, 0, 2)
 	}
 	m.loggers = append(m.loggers, logger...)
 }
