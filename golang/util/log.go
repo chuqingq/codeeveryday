@@ -81,11 +81,19 @@ func (m *myLogger) AppendLogger(logger ...PrintfI) {
 
 // 输出方式
 
+// 循环方式
+
+var cirLogger *circularLogger
+
+// 标准方式
+
 var stdLogger *log.Logger
 
 func newStdLogger() *log.Logger {
 	return log.New(os.Stdout, "", log.Flags()|logFlags)
 }
+
+// udp方式
 
 var udpLogger *log.Logger
 
@@ -104,11 +112,12 @@ const logFlags = log.Lshortfile | log.Lmicroseconds
 
 func init() {
 	// 输出方式
-	stdLogger = newStdLogger()
+	// stdLogger = newStdLogger()
+	cirLogger = newCircularLogger()
 	udpLogger = newUdpLogger()
 	// 级别：输出还是不输出
 	empty = &myLogger{}
 	empty.AppendLogger(udpLogger)
 	logger = &myLogger{}
-	logger.AppendLogger(stdLogger, udpLogger)
+	logger.AppendLogger( /*stdLogger*/ cirLogger, udpLogger)
 }
