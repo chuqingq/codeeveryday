@@ -22,6 +22,10 @@ model = tf.keras.Sequential([
     layers.Dense(1)
 ])
 
+# print model
+from keras.utils import plot_model
+plot_model(model, to_file='model.png', show_shapes=True)
+
 # compile
 model.compile(optimizer=tf.keras.optimizers.Adam(0.01),
               #loss=tf.keras.losses.CategoricalCrossentropy(from_logits=True),
