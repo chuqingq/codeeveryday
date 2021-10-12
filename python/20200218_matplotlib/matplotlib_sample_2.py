@@ -8,4 +8,5 @@ plt.xlabel("x axis caption")
 plt.ylabel("y axis caption") 
 plt.plot(x,y)
 plt.show()
+plt.savefig('1.png')
 
