@@ -1,0 +1,26 @@
+package main
+
+import (
+	"fmt"
+	"io"
+	"log"
+	"net"
+	"os"
+)
+
+func main() {
+	addrStr := "127.0.0.1:61234"
+	addr, err := net.ResolveUDPAddr("udp", addrStr)
+	if err != nil {
+		log.Printf("resolve address error: %v", err)
+		return
+	}
+	conn, err := net.ListenUDP("udp", addr)
+	if err != nil {
+		log.Printf("listen udp error: %v", err)
+		return
+	}
+	fmt.Printf("logging for %s://%s ...", "udp", addrStr)
+	_, err = io.Copy(os.Stdout, conn)
+	log.Printf("io copy error: %v", err)
+}

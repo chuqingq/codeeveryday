@@ -71,6 +71,10 @@ func (m *Json) Unmarshal(v interface{}) error {
 	return json.Unmarshal(b, v)
 }
 
+func (m *Json) ToInterface(v interface{}) error {
+	return m.Unmarshal(v)
+}
+
 // ToBytes Message转成[]byte
 func (m *Json) ToBytes() []byte {
 	b, err := m.EncodePretty()
