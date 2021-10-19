@@ -1,26 +1,32 @@
 use std::io::Read;
 
 #[derive(Debug)]
-struct Foo;
+struct Foo {
+    a: i32,
+}
 
-/*
-impl Read for Foo {
-    fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
+impl Foo {
+    fn write(&mut self) {
+        self.a = 20;
+    }
+}
+
+impl Read for &Foo {
+    fn read(&mut self, _buf: &mut [u8]) -> std::io::Result<usize> {
+        self.a = 10;
         Ok(0)
     }
+}
+
+/*
+fn bar<T: Read>(mut r: T) {
+    let mut buf = [0; 10];
+    r.read(&mut buf[..]);
+    println!("123");
 }
 */
 
-impl Read for &Foo {
-    fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
-        Ok(0)
-    }
-}
-
-fn bar<T: Read>(r: T) {}
-
 fn main() {
-    let f = Foo;
-    //bar(f);
-    bar(&f); // the trait `std::io::Read` is not implemented for `&Foo`
+    let f = Foo{a: 1};
+    // bar(&f);
 }
