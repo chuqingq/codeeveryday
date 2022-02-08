@@ -1,9 +1,11 @@
-package server
+package mdns_rpc_sample
 
 import (
 	"errors"
 	"fmt"
 	"log"
+	"net"
+	"net/http"
 	"net/rpc"
 	"os"
 	"sync"
@@ -11,8 +13,16 @@ import (
 	"github.com/hashicorp/mdns"
 )
 
-func RPCCall(service, method string, args interface{}, reply interface{}) error {
-	c, err := GetServiceClient(service)
+type RPC struct {
+	servicesMap sync.Map
+}
+
+func NewRPC() *RPC {
+	return &RPC{}
+}
+
+func (r *RPC) Call(service, method string, args interface{}, reply interface{}) error {
+	c, err := r.GetServiceClient(service)
 	if err != nil {
 		return err
 	}
@@ -22,8 +32,6 @@ func RPCCall(service, method string, args interface{}, reply interface{}) error 
 
 // TODO func RPCGo(serviceMethod string, args interface{}, reply interface{}, done chan *Call) *Call {}
 
-var servicesMap sync.Map // service string => {ip, port, conn}
-
 type serviceInfo struct {
 	ip   string
 	port int
@@ -31,8 +39,8 @@ type serviceInfo struct {
 	lock sync.Mutex // TODO
 }
 
-func GetServiceClient(service string) (*rpc.Client, error) {
-	s, ok := servicesMap.Load(service)
+func (r *RPC) GetServiceClient(service string) (*rpc.Client, error) {
+	s, ok := r.servicesMap.Load(service)
 	if ok {
 		return s.(*serviceInfo).conn, nil
 	}
@@ -53,7 +61,7 @@ func GetServiceClient(service string) (*rpc.Client, error) {
 			return nil, err
 		}
 		log.Printf("rpc.Dial success")
-		servicesMap.Store(service, &serviceInfo{
+		r.servicesMap.Store(service, &serviceInfo{
 			ip:   entry.AddrV4.String(),
 			port: entry.Port,
 			conn: c,
@@ -66,7 +74,17 @@ func GetServiceClient(service string) (*rpc.Client, error) {
 var serversMap sync.Map
 
 // TODO 需要server main中调用Register方法注册到http
-func RegisterService(serviceName string, port int) error {
+func (r *RPC) RegisterService(serviceName string, rcvr interface{}) error {
+	port := 8081
+	// rpc
+	rpc.Register(rcvr)
+	rpc.HandleHTTP()
+	l, e := net.Listen("tcp", fmt.Sprintf(":%v", port))
+	if e != nil {
+		log.Fatalf("listen error: %v", e)
+	}
+	go http.Serve(l, nil) // TODO
+
 	host, _ := os.Hostname()
 	info := []string{"My awesome service"}
 	service, err := mdns.NewMDNSService(host, serviceName, "", "", port, nil, info)
@@ -84,9 +102,14 @@ func RegisterService(serviceName string, port int) error {
 	return nil
 }
 
-func UnRegisterService(service string) {
-	s, ok := serversMap.Load(service)
+func (r *RPC) UnRegisterService(service string) {
+	s, ok := r.servicesMap.Load(service)
 	if ok {
 		s.(*mdns.Server).Shutdown()
 	}
+}
+
+func (r *RPC) Close() error {
+	// TODO
+	return nil
 }
