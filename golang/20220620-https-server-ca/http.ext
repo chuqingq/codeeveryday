@@ -1,0 +1,10 @@
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+extendedKeyUsage = serverAuth, clientAuth
+subjectAltName=@SubjectAlternativeName
+
+[SubjectAlternativeName ]
+IP.1=172.30.111.213
+IP.2=127.0.0.1
+DNS.1=wslserver
+DNS.2=localhost
+
