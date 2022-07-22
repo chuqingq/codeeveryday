@@ -17,6 +17,6 @@ func main() {
 		arr[key] = value
 	}
 	t2 := time.Now().UnixNano()
-	fmt.Printf("%d ms\n", (t2 - t1)/1000000)
+	fmt.Printf("%d ms, count: %v\n", (t2 - t1)/1000000, len(arr))
 }
 
