@@ -1,13 +1,3 @@
-/*
- * @Author: baitian35 daniel.bai@dilu.com
- * @Date: 2022-08-10 17:20:14
- * @LastEditors: baitian35 daniel.bai@dilu.com
- * @LastEditTime: 2022-08-19 10:19:20
- * @FilePath: /cppp/alg/src/pingpong.cc
- * @Description:
- *
- * Copyright (c) 2022 by 的卢技术有限公司, All Rights Reserved.
- */
 #include <atomic>
 #include <chrono>
 #include <condition_variable>
