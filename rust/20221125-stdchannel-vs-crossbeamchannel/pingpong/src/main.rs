@@ -1,9 +1,8 @@
+use std::sync::mpsc::channel;
 use std::thread;
 use std::time::Instant;
-use std::sync::mpsc::channel;
 
 use crossbeam_channel::bounded;
-
 
 fn main() {
     stdchannel();
@@ -32,7 +31,10 @@ fn stdchannel() {
         r2.recv().unwrap();
     }
 
-    println!("std-channel: time cost: {:?} ns/loop", t.elapsed().as_nanos()/(LOOPS as u128));
+    println!(
+        "std-channel: time cost: {:?} ns/loop",
+        t.elapsed().as_nanos() / (LOOPS as u128)
+    );
 }
 
 fn crossbeamchannel() {
@@ -56,7 +58,10 @@ fn crossbeamchannel() {
         r2.recv().unwrap();
     }
 
-    println!("crossbeam-channel: time cost: {:?} ns/loop", t.elapsed().as_nanos()/(LOOPS as u128));
+    println!(
+        "crossbeam-channel: time cost: {:?} ns/loop",
+        t.elapsed().as_nanos() / (LOOPS as u128)
+    );
 }
 // cargo build --release
 // ./target/release/pingpong
