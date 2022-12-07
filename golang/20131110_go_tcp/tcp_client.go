@@ -33,3 +33,4 @@ func main() {
 
     // fmt.Printf("status: %#v\n", status)
 }
+// tcp pingpong：在wsl中，45us；在vb ubuntu-mdc中，353us
