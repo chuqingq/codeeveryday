@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"net"
 	"time"
 )
@@ -13,27 +13,34 @@ func main() {
 	}
 	defer conn.Close()
 
+	const count = 10000
 	buf := make([]byte, 1024)
+	msg := []byte("hello world")
 
-	for i := 0; i < 5; i++ {
+	start := time.Now()
+	for i := 0; i < count; i++ {
 		//准备要发送的字符串
-		msg := fmt.Sprintf("Hello World, %03d", i)
-		n, err := conn.Write([]byte(msg))
+		_, err := conn.Write(msg)
 		if err != nil {
 			println("Write Buffer Error:", err.Error())
 			break
 		}
-		fmt.Printf("write: %s\n", msg)
+		// fmt.Printf("write: %s\n", msg)
 
 		//从服务器端收字符串
-		n, err = conn.Read(buf)
+		n, err := conn.Read(buf)
 		if err != nil {
 			println("Read Buffer Error:", err.Error())
 			break
 		}
-		fmt.Printf("read: %s\n", string(buf[0:n]))
+		// fmt.Printf("read: %s\n", string(buf[0:n]))
+		if n != len(msg) {
+			log.Printf("length not match")
+		}
 
-		//等一秒钟
-		time.Sleep(time.Second)
+		// //等一秒钟
+		// time.Sleep(time.Second)
 	}
+
+	log.Printf("%v", time.Now().Sub(start)/count)
 }
