@@ -11,7 +11,8 @@ const COUNT = 100000
 func main() {
 	// 创建连接
 	socket, err := net.DialUDP("udp4", nil, &net.UDPAddr{
-		IP:   net.IPv4(192, 168, 54, 118),
+		// 172.26.20.58
+		IP:   net.IPv4(127,   0,   0,  1),
 		Port: 8080,
 	})
 	if err != nil {
