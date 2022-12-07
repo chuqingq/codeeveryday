@@ -57,3 +57,4 @@ func main() {
 // 2018/02/09 09:13:58 23.287µs
 // remote output:
 // 2018/02/09 09:20:45 353.44µs
+// udp pingpong：在wsl中，45us；在vb ubuntu-mdc中，329us。
