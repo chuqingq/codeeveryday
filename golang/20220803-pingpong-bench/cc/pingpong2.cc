@@ -97,8 +97,10 @@ int main() {
 }
 
 /*
-$ ./a.out
+Busy loop on pingpong.cc.
+
+$ ./pingpong2
 pingpong
-Using condtion_variable pingpong test times:1000000 duration: 29770ms 29770ns/op
+Using condtion_variable pingpong test times:1000000 duration: 412ms 412ns/op
 */
 
