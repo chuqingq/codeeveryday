@@ -1,0 +1,33 @@
+// package main
+
+// import (
+// 	"bytes"
+// 	"fmt"
+// 	"io"
+// 	"log"
+// 	// "mime/multipart"
+// )
+
+// func main() {
+// 	err := read2()
+// 	fmt.Print(err)
+// }
+
+// func read2() error {
+
+// 	mr := NewReader(bytes.NewReader(MockFromFile()), "-----------------------7e13971310878")
+// 	for {
+// 		p, err := mr.NextPart()
+// 		if err == io.EOF {
+// 			return err
+// 		}
+// 		if err != nil {
+// 			log.Fatalf("err: %v", err)
+// 		}
+// 		slurp, err := io.ReadAll(p)
+// 		if err != nil {
+// 			log.Fatalf("read: %v", err)
+// 		}
+// 		fmt.Printf("Part %q: %q\n", p.Header.Get("Content-Type"), slurp)
+// 	}
+// }
