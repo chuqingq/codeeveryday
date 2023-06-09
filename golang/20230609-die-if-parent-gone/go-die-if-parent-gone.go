@@ -45,6 +45,7 @@ func fork() {
 	cmd.Env = append(os.Environ(), fmt.Sprintf("PARENT_PID=%d", os.Getpid()))
 
 	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
 	cmd.Start()
 	fmt.Println("Started child process", cmd.Process.Pid)
 }
@@ -62,7 +63,7 @@ func setKillSignal() {
 }
 
 func DieIfParentDie() {
-	_, _, errno := syscall.RawSyscall(uintptr(PRCTL_SYSCALL), uintptr(PR_SET_PDEATHSIG), uintptr(syscall.SIGKILL), 0)
+	_, _, errno := syscall.RawSyscall(uintptr(PRCTL_SYSCALL), uintptr(PR_SET_PDEATHSIG), uintptr(syscall.SIGTERM), 0)
 	if errno != 0 {
 		log.Printf("prctl PR_SET_PDEATHSIG error: %v", errno)
 	}
@@ -77,7 +78,12 @@ func main() {
 		fmt.Println("Parent ID", os.Getpid())
 		fork()
 	}
-	killChan := make(chan os.Signal)
-	signal.Notify(killChan, os.Kill)
-	<-killChan
+	killChan := make(chan os.Signal, 1)
+	signal.Notify(killChan)
+	sig := <-killChan
+	log.Printf("%v recv sig: %v", os.Getpid(), sig)
 }
+
+// 1. 如果不设置prctl，父进程退出，子进程不会收到任何信号
+// 2. prctl可以设置父进程退出时发送SIGKILL或SIGTERM信号
+
