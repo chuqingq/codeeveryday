@@ -8,6 +8,7 @@ import (
 	"os/signal"
 	"strconv"
 	"syscall"
+	"time"
 )
 
 // Demonstration of "forking" and setting prctl PDEATH control
@@ -73,10 +74,12 @@ func DieIfParentDie() {
 func main() {
 	if os.Getenv("PARENT_PID") != "" {
 		// Comment the line below
-		DieIfParentDie()
+		// DieIfParentDie()
 	} else {
 		fmt.Println("Parent ID", os.Getpid())
 		fork()
+		time.Sleep(time.Second * 2)
+		panic("parent panic")
 	}
 	killChan := make(chan os.Signal, 1)
 	signal.Notify(killChan)
@@ -86,4 +89,6 @@ func main() {
 
 // 1. 如果不设置prctl，父进程退出，子进程不会收到任何信号
 // 2. prctl可以设置父进程退出时发送SIGKILL或SIGTERM信号
+// 3. 如果parent panic，也遵循上述结论。
+
 
