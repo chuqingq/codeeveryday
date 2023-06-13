@@ -30,6 +30,10 @@ func (m *Json) GetPath(path string) *Json {
 	return &Json{*m.Json.GetPath(strings.Split(path, ".")...)}
 }
 
+// func (m *Json) Set(v interface{}) {
+// 	m.Json.SetPath([]string{}, v)
+// }
+
 // func (j *Json) String() (string, error)
 // func (j *Json) MustString(args ...string) string
 

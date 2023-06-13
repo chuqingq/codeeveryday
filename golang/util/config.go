@@ -1,35 +1,30 @@
 package util
 
 import (
-	"os"
+	"log"
 )
 
 type Config struct {
 	*Json
-	filePath        string
-	defaultFilePath string
+	filePath string
 }
 
-func NewConfig(filePath, defaultFilePath string) (*Config, error) {
+func NewConfig(filePath string) (*Config, error) {
 	m, err := JsonFromFile(filePath)
 	if err != nil {
-		m, err = JsonFromFile(defaultFilePath)
-		if err != nil {
-			return nil, err
-		}
-		m.ToFile(filePath)
+		log.Printf("config JsonFromFile error: %v", err)
+		return nil, err
 	}
 	return &Config{
-		Json:            m,
-		filePath:        filePath,
-		defaultFilePath: defaultFilePath,
+		Json:     m,
+		filePath: filePath,
 	}, nil
 }
 
 // 恢复默认设置
-func (c *Config) Reset() error {
+func (c *Config) ResetFrom(defaultFilePath string) error {
 	var err error
-	c.Json, err = JsonFromFile(c.defaultFilePath)
+	c.Json, err = JsonFromFile(defaultFilePath)
 	if err != nil {
 		return err
 	}
@@ -46,10 +41,10 @@ func (c *Config) Reset() error {
 // 	return nil
 // }
 
-func (c *Config) SaveInterface(path string, v interface{}) {
-	m := JsonFromInterface(v)
-	c.Set(path, m)
-}
+// func (c *Config) SaveInterface(path string, v interface{}) {
+// 	m := JsonFromInterface(v)
+// 	c.Set(path, m)
+// }
 
 // // configLoad 模块级配置加载
 // func configLoad(path string, val interface{}) {
@@ -58,13 +53,11 @@ func (c *Config) SaveInterface(path string, v interface{}) {
 // 	msg.Unmarshal(val)
 // }
 
-/*
-// 等同于GetPath() + ToInterface()
-func (c *Config) LoadStruct(path string, v interface{}) {
-	m := c.Get(path)
-	m.ToInterface(v)
-}
-*/
+// // 等同于GetPath() + ToInterface()
+// func (c *Config) LoadTo(path string, v interface{}) {
+// 	m := c.Get(path)
+// 	m.ToInterface(v)
+// }
 
 // Set 设置值。Message.Set + save。v支持string/int/bool等，如果是复合值，需要是Map/MustMap()
 func (c *Config) SetPath(path string, v interface{}) {
@@ -78,6 +71,6 @@ func (c *Config) Save() error {
 	return c.ToFile(c.filePath)
 }
 
-func (c *Config) Remove() {
-	os.Remove(c.filePath)
-}
+// func (c *Config) Remove() {
+// 	os.Remove(c.filePath)
+// }
