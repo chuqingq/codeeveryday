@@ -1,7 +1,11 @@
 package log
 
 import (
+	"log"
 	"os"
+	"path"
+	"path/filepath"
+	"runtime"
 	"testing"
 	"time"
 
@@ -25,19 +29,27 @@ func TestLogLevel(t *testing.T) {
 	}
 }
 
+func getCurrentPath() string {
+	_, filename, _, _ := runtime.Caller(1)
+	return path.Dir(filename)
+}
+
 func TestAppendOutput(t *testing.T) {
 	logger := New()
 
 	// 打开文件，如果不存在则创建
-	file, err := os.OpenFile("/Users/chuqq/data/temp/projects/codeeveryday/golang/20230610-go-log/test.log", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
+	filename := filepath.Join(getCurrentPath(), "test.log")
+	log.Printf("filename: %v", filename)
+	file, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
 	assert.Equal(t, nil, err)
 	defer file.Close()
+	defer os.Remove(filename)
 
 	go func() {
 		time.Sleep(time.Second * 5)
 		AppendOutput(logger, file)
 	}()
-	for {
+	for i := 0; i < 10; i++ {
 		logger.Debugf("this is debug log")
 		logger.Infof("this is info log")
 		logger.Warnf("this is warn log")
