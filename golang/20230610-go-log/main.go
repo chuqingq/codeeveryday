@@ -1,12 +1,24 @@
 package main
 
-import "test_go/log"
+import (
+	"test_go/log"
+	"time"
+
+	"github.com/sirupsen/logrus"
+)
 
 func main() {
+	logger := log.New()
+	go func() {
+		time.Sleep(time.Second * 5)
+		logger.SetLevel(logrus.ErrorLevel)
+	}()
 	for {
-		log.Logger().Debugf("this is debug log")
-		log.Logger().Infof("this is info log")
-		log.Logger().Warnf("this is warn log")
-		log.Logger().Errorf("this is error log")
+		logger.Debugf("this is debug log")
+		logger.Infof("this is info log")
+		logger.Warnf("this is warn log")
+		logger.Errorf("this is error log")
+
+		time.Sleep(time.Second)
 	}
 }
