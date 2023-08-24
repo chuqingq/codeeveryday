@@ -65,10 +65,15 @@ func (n *SystemdNetwork) SaveTo(inf string) error {
 	return file.SaveTo(confPath(inf))
 }
 
-func (n *SystemdNetwork) Stop(inf string) error {
-	return exec.Command("wg-quick", "down", inf).Run()
+func StopService() error {
+	return exec.Command("systemctl", "stop", "systemd-networkd.service").Run()
 }
 
-func (n *SystemdNetwork) Start(inf string) error {
-	return exec.Command("wg-quick", "up", inf).Run()
+func StartService() error {
+	return exec.Command("systemctl", "start", "systemd-networkd.service").Run()
 }
+
+func EnableService() error {
+	return exec.Command("systemctl", "enable", "systemd-networkd.service").Run()
+}
+
