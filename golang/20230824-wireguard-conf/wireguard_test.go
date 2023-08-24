@@ -13,8 +13,8 @@ func TestLoadSave(t *testing.T) {
 	var wg WireGuard
 	err := wg.Load("wg1")
 	assert.Nil(t, err)
-	assert.Equal(t, wg.Interface.Address, "10.11.0.2/24")
-	assert.Equal(t, wg.Peer.PersistentKeepalive, 10)
+	assert.Equal(t, "10.11.0.2/24", wg.Interface.Address)
+	assert.Equal(t, 10, wg.Peer.PersistentKeepalive)
 
 	// modify
 	const newAddr = "10.11.0.1/24"
@@ -29,8 +29,8 @@ func TestLoadSave(t *testing.T) {
 	var wg2 WireGuard
 	err = wg2.Load("wg2")
 	assert.Nil(t, err)
-	assert.Equal(t, wg.Interface.Address, newAddr)
-	assert.Equal(t, wg.Peer.PersistentKeepalive, 10)
+	assert.Equal(t, newAddr, wg.Interface.Address)
+	assert.Equal(t, 10, wg.Peer.PersistentKeepalive)
 }
 
 func TestGetAllowedIps(t *testing.T) {
@@ -39,5 +39,5 @@ func TestGetAllowedIps(t *testing.T) {
 	var wg WireGuard
 	err := wg.Load("wg1")
 	assert.Nil(t, err)
-	assert.Equal(t, len(wg.GetAllowedIPs()), 6)
+	assert.Equal(t, 6, len(wg.GetAllowedIPs()))
 }
