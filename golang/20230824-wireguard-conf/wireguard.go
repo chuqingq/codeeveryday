@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os/exec"
-	"strings"
 
 	"gopkg.in/ini.v1"
 )
@@ -20,7 +19,7 @@ type WireGuard struct {
 	Peer struct {
 		PublicKey           string
 		PresharedKey        string
-		AllowedIPs          string
+		AllowedIPs          []string
 		Endpoint            string
 		PersistentKeepalive int
 	}
@@ -33,10 +32,15 @@ func confPath(inf string) string {
 }
 
 func (w *WireGuard) Load(inf string) error {
-	err := ini.MapTo(w, confPath(inf))
+	f, err := ini.Load(confPath(inf))
 	if err != nil {
 		return err
 	}
+	err = f.MapTo(w)
+	if err != nil {
+		return err
+	}
+	w.Peer.AllowedIPs = f.Section("Peer").Key("AllowedIPs").Strings(",")
 	return nil
 }
 
@@ -47,15 +51,6 @@ func (w *WireGuard) SaveTo(inf string) error {
 		return err
 	}
 	return file.SaveTo(confPath(inf))
-}
-
-func (w *WireGuard) GetAllowedIPs() []string {
-	allowedIPs := strings.Split(w.Peer.AllowedIPs, ",")
-	// 去掉AllowedIPs中的空格
-	for i, v := range allowedIPs {
-		allowedIPs[i] = strings.TrimSpace(v)
-	}
-	return allowedIPs
 }
 
 func (w *WireGuard) Stop(inf string) error {
