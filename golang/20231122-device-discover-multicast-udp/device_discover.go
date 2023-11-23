@@ -9,9 +9,9 @@ type Command struct {
 
 // Device 设备信息
 type Device struct {
-	SerialNumber  string // 设备序列号。设备的唯一标识
-	AdminPassword string // 管理员密码
+	SerialNumber string // 设备序列号。设备的唯一标识
 
+	Password      string // 管理员密码
 	DHCP          bool   // 开启DHCP
 	IP            string // IP地址
 	Port          int    // 端口

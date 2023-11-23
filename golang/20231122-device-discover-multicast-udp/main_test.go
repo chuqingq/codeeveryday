@@ -8,8 +8,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const CmdSetNetwork string = "set_network" // 设置网络
-
 func TestMain(t *testing.T) {
 	// 设备启动
 	dev := &Device{

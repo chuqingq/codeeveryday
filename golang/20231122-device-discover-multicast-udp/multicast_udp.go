@@ -51,6 +51,8 @@ func (s *MulticastUDP) Send(data []byte) error {
 	if err != nil {
 		return err
 	}
+	defer conn.Close()
+	// TODO 可以复用？
 
 	// 发送数据
 	_, err = conn.Write(data)
