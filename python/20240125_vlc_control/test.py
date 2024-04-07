@@ -18,7 +18,7 @@ def video(source):
     player.set_media(media)
 
     inst = player.get_instance()
-    inst.add_intf('')
+    # inst.add_intf('')
      
     # play the video
     player.play()

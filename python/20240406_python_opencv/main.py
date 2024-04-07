@@ -7,7 +7,6 @@ import json
 import logging
 
 logging.basicConfig(
-    filename="app.log",
     level=logging.DEBUG,
     format="%(asctime)s - %(levelname)s - %(message)s",
 )
@@ -18,24 +17,24 @@ class EventsReader:
         self.json_decoder = json.JSONDecoder()
         self.file = open(filename)
         self.buffer = ""
-        self.cache_event = self.read_one()
+        self.cache_event = self.__read_one()
         self.diff_ms = (
             int(time.time() * 1000) - self.cache_event["detectResult"]["timeMs"]
         )
 
     def get_events(self):
-        """调用方通过此接口获取一个事件。会计算时间戳"""
+        """根据时间戳获取一组事件"""
         events = []
         detect_ms = int(time.time() * 1000) - self.diff_ms
         while (
             self.cache_event and self.cache_event["detectResult"]["timeMs"] <= detect_ms
         ):
             events.extend(self.cache_event["detectResult"]["items"])
-            self.cache_event = self.read_one()
+            self.cache_event = self.__read_one()
         return events
 
-    def read_one(self):
-        """从文件和缓冲区中读取一个事件。内部使用，不计算时间戳"""
+    def __read_one(self):
+        """从缓冲区或文件中读取一个事件。不计算时间戳"""
         buf_len = 4096*2
         while len(self.buffer) < buf_len:
             b = self.file.read(buf_len)
@@ -46,9 +45,13 @@ class EventsReader:
         if not self.buffer:
             return None
         # logging.debug(f"buffer: {self.buffer}")
-        event, idx = self.json_decoder.raw_decode(self.buffer)
-        self.buffer = self.buffer[idx:]
-        return event
+        try:
+            event, idx = self.json_decoder.raw_decode(self.buffer)
+            self.buffer = self.buffer[idx:]
+            return event
+        except json.decoder.JSONDecodeError:
+            self.buffer = ""
+            return None
 
     def close(self):
         self.file.close()
