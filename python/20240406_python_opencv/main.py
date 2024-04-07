@@ -16,6 +16,7 @@ class EventsReader:
     def __init__(self, filename):
         self.json_decoder = json.JSONDecoder()
         self.file = open(filename)
+        self.eof = False
         self.buffer = ""
         self.cache_event = self.__read_one()
         self.diff_ms = (
@@ -35,23 +36,21 @@ class EventsReader:
 
     def __read_one(self):
         """从缓冲区或文件中读取一个事件。不计算时间戳"""
-        buf_len = 4096*2
-        while len(self.buffer) < buf_len:
-            b = self.file.read(buf_len)
-            # logging.debug(f"read {len(b)} bytes")
-            if not b:
-                break
-            self.buffer += b
-        if not self.buffer:
-            return None
-        # logging.debug(f"buffer: {self.buffer}")
-        try:
-            event, idx = self.json_decoder.raw_decode(self.buffer)
-            self.buffer = self.buffer[idx:]
-            return event
-        except json.decoder.JSONDecodeError:
-            self.buffer = ""
-            return None
+        while True:
+            try:
+                event, idx = self.json_decoder.raw_decode(self.buffer)
+                self.buffer = self.buffer[idx:]
+                return event
+            except json.decoder.JSONDecodeError:
+                if self.eof:
+                    self.buffer = ""
+                    return None
+                else:
+                    b = self.file.read(1024)
+                    if not b:
+                        self.eof = True
+                    else:
+                        self.buffer += b
 
     def close(self):
         self.file.close()
@@ -139,4 +138,4 @@ cap.release()
 # 关闭所有窗口
 cv2.destroyAllWindows()
 
-logging.info(f"识别结果: {json.dumps(rec, indent=4)}")
+logging.info(f"识别结果: {json.dumps(rec, ensure_ascii=False, indent=4)}")
