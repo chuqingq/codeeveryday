@@ -74,8 +74,11 @@ next_frame_ms = int(time.time() * 1000)
 
 # 创建窗口，设置合适的大小和位置
 cv2.namedWindow('transtream', cv2.WINDOW_NORMAL)
-cv2.moveWindow('transtream', 100, 100) 
+cv2.moveWindow('transtream', 20, 20) 
 cv2.resizeWindow('transtream', int(1920/2), int(1080/2))
+
+# 识别结果
+rec = {}
 
 # 循环读取视频帧
 while cap.isOpened():
@@ -85,8 +88,8 @@ while cap.isOpened():
         break
     # 获取事件
     events = events_reader.get_events()
-    if len(events) != 0:
-        logging.debug(f"events count: {len(events)}")
+    # if len(events) != 0:
+    #     logging.debug(f"events count: {len(events)}")
     for event in events:
         # logging.debug(event)
         # 获取框
@@ -98,11 +101,24 @@ while cap.isOpened():
         # 如果是车或者人
         if event['type'] == 'person' and event['person']['id']:
             color = (0, 255, 0)
-            cv2.putText(frame, event['person']['id'], (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+            id = event['person']['id']
+            logging.debug(f"人物 {id}")
+            if id not in rec:
+                rec[id] = 1
+            else:
+                rec[id] += 1
+            cv2.putText(frame, id, (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+            cv2.imshow('person', frame[y:y1, x:x1])
         elif event['type'] == 'car' and event['lp']['number']:
             color = (0, 0, 255)
-            logging.debug(f"车牌 {event['lp']['confidence']}")
-            cv2.putText(frame, event['lp']['number'], (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+            id = event['lp']['number']
+            if id not in rec:
+                rec[id] = 1
+            else:
+                rec[id] += 1
+            logging.debug(f"车牌 {id}")
+            cv2.putText(frame, id, (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+            cv2.imshow('car', frame[y:y1, x:x1])
         # 画框
         cv2.rectangle(frame, (x, y), (x1, y1), color, 2)
     # 显示视频帧
@@ -122,3 +138,5 @@ cap.release()
 
 # 关闭所有窗口
 cv2.destroyAllWindows()
+
+logging.info(f"识别结果: {json.dumps(rec, indent=4)}")
