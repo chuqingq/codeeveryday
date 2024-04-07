@@ -69,6 +69,11 @@ events_reader = EventsReader("transtream_events.txt")
 
 next_frame_ms = int(time.time() * 1000)
 
+# 创建窗口，设置合适的大小和位置
+cv2.namedWindow('transtream', cv2.WINDOW_NORMAL)
+cv2.moveWindow('transtream', 100, 100) 
+cv2.resizeWindow('transtream', int(1920/2), int(1080/2))
+
 # 循环读取视频帧
 while cap.isOpened():
     # 读取视频帧
@@ -87,15 +92,24 @@ while cap.isOpened():
         x1 = int(event["location"]["right"] * width)
         y1 = int(event["location"]["bottom"] * height)
         color = (255, 0, 0)
+        # 如果是车或者人
+        if event['type'] == 'person' and event['person']['id']:
+            color = (0, 255, 0)
+            cv2.putText(frame, event['person']['id'], (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+        elif event['type'] == 'car' and event['lp']['number']:
+            color = (0, 0, 255)
+            logging.debug(f"车牌 {event['lp']['confidence']}")
+            cv2.putText(frame, event['lp']['number'], (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
         # 画框
         cv2.rectangle(frame, (x, y), (x1, y1), color, 2)
     # 显示视频帧
-    cv2.imshow("transtream", cv2.resize(frame, (int(width/2), int(height/2))))
+    cv2.imshow("transtream", frame)
     # 等待按键输入
     next_frame_ms += frame_wait_ms
-    if next_frame_ms <= int(time.time() * 1000):
-        continue
-    if cv2.waitKey(next_frame_ms-int(time.time() * 1000)) & 0xFF == ord("q"):
+    wait_ms = next_frame_ms-int(time.time() * 1000)
+    if wait_ms <= 0:
+        wait_ms = 1
+    if cv2.waitKey(wait_ms) & 0xFF == ord("q"):
         break
 
 events_reader.close()
