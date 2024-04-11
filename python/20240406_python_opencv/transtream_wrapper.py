@@ -37,20 +37,20 @@ async def transtream():
     proc = await asyncio.create_subprocess_shell(
         "./do_transtream",
         stdin=asyncio.subprocess.PIPE,
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE,
+        # stdout=asyncio.subprocess.PIPE,
+        # stderr=asyncio.subprocess.PIPE,
     )
     global transtream_proc
     transtream_proc = proc
     # 处理标准输出
-    task_stdout = asyncio.create_task(handle_transtream_stdout(proc.stdout))
+    # task_stdout = asyncio.create_task(handle_transtream_stdout(proc.stdout))
     # 处理标准错误（日志）
-    task_stderr = asyncio.create_task(handle_transtream_stderr(proc.stderr))
+    # task_stderr = asyncio.create_task(handle_transtream_stderr(proc.stderr))
     # 传入标准输入
     # proc.stdin.writelines([b'{"a":456,"b":7,"c":8}\n'])
     # await proc.stdin.drain()
     # 等待任务完成
-    await asyncio.gather(proc.wait(), task_stdout, task_stderr)
+    await asyncio.gather(proc.wait()) # , task_stdout, task_stderr
     logging.debug("transtream finished.")
     asyncio.get_event_loop().stop()
 
@@ -65,7 +65,7 @@ async def handle_transtream_stdout(stream):
             break
         # logging.debug("transtream stdout: " + line.decode().strip())
         # 打印出来给父进程使用
-        print(line.decode())
+        print(line.decode(), '\n')
 
 
 async def handle_transtream_stderr(stream):
