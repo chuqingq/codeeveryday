@@ -16,10 +16,11 @@ class EventsReader:
     def __init__(self, filename):
         self.json_decoder = json.JSONDecoder()
         self.file = open(filename)
+        self.eof = False
         self.buffer = ""
         self.cache_event = self.__read_one()
         self.diff_ms = (
-            int(time.time() * 1000) - self.cache_event["detectResult"]["timeMs"]
+            int(time.time() * 1000) - self.cache_event["result"]["timeMs"]
         )
 
     def get_events(self):
@@ -27,31 +28,29 @@ class EventsReader:
         events = []
         detect_ms = int(time.time() * 1000) - self.diff_ms
         while (
-            self.cache_event and self.cache_event["detectResult"]["timeMs"] <= detect_ms
+            self.cache_event and self.cache_event["result"]["timeMs"] <= detect_ms
         ):
-            events.extend(self.cache_event["detectResult"]["items"])
+            events.extend(self.cache_event["result"]["items"])
             self.cache_event = self.__read_one()
         return events
 
     def __read_one(self):
         """从缓冲区或文件中读取一个事件。不计算时间戳"""
-        buf_len = 4096*2
-        while len(self.buffer) < buf_len:
-            b = self.file.read(buf_len)
-            # logging.debug(f"read {len(b)} bytes")
-            if not b:
-                break
-            self.buffer += b
-        if not self.buffer:
-            return None
-        # logging.debug(f"buffer: {self.buffer}")
-        try:
-            event, idx = self.json_decoder.raw_decode(self.buffer)
-            self.buffer = self.buffer[idx:]
-            return event
-        except json.decoder.JSONDecodeError:
-            self.buffer = ""
-            return None
+        while True:
+            try:
+                event, idx = self.json_decoder.raw_decode(self.buffer)
+                self.buffer = self.buffer[idx:]
+                return event
+            except json.decoder.JSONDecodeError:
+                if self.eof:
+                    self.buffer = ""
+                    return None
+                else:
+                    b = self.file.read(1024)
+                    if not b:
+                        self.eof = True
+                    else:
+                        self.buffer += b
 
     def close(self):
         self.file.close()
@@ -77,8 +76,7 @@ cv2.namedWindow('transtream', cv2.WINDOW_NORMAL)
 cv2.moveWindow('transtream', 20, 20) 
 cv2.resizeWindow('transtream', int(1920/2), int(1080/2))
 
-# 识别结果
-rec = {}
+last_events = []
 
 # 循环读取视频帧
 while cap.isOpened():
@@ -86,43 +84,41 @@ while cap.isOpened():
     ret, frame = cap.read()
     if not ret:
         break
+    # 复制一个frame
+    frame2 = frame.copy()
     # 获取事件
     events = events_reader.get_events()
-    # if len(events) != 0:
-    #     logging.debug(f"events count: {len(events)}")
+    if not events:
+        events = last_events
+    else:
+        last_events = events
     for event in events:
-        # logging.debug(event)
         # 获取框
-        x = int(event["location"]["left"] * width)
-        y = int(event["location"]["top"] * height)
-        x1 = int(event["location"]["right"] * width)
-        y1 = int(event["location"]["bottom"] * height)
+        x = int(event["loc"]["x0"] * width)
+        y = int(event["loc"]["y0"] * height)
+        x1 = int(event["loc"]["x1"] * width)
+        y1 = int(event["loc"]["y1"] * height)
         color = (255, 0, 0)
         # 如果是车或者人
-        if event['type'] == 'person' and event['person']['id']:
+        if event['type'] == 'person' and 'face' in event and event['face']['id']:
             color = (0, 255, 0)
-            id = event['person']['id']
+            id = event['face']['id']
             logging.debug(f"人物 {id}")
-            if id not in rec:
-                rec[id] = 1
-            else:
-                rec[id] += 1
-            cv2.putText(frame, id, (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
-            cv2.imshow('person', frame[y:y1, x:x1])
-        elif event['type'] == 'car' and event['lp']['number']:
-            color = (0, 0, 255)
-            id = event['lp']['number']
-            if id not in rec:
-                rec[id] = 1
-            else:
-                rec[id] += 1
+            cv2.putText(frame2, id, (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+            cv2.imshow('face', frame[y:y1, x:x1])
+        elif event['type'] == 'car' and 'lp' in event and event['lp']['no']:
+            color = (0, 255, 0)
+            thickness = 2
+            id = event['lp']['no']
             logging.debug(f"车牌 {id}")
-            cv2.putText(frame, id, (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+            cv2.putText(frame2, id, (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
             cv2.imshow('car', frame[y:y1, x:x1])
+        elif 'type' in event:
+            cv2.putText(frame2, event['type'], (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
         # 画框
-        cv2.rectangle(frame, (x, y), (x1, y1), color, 2)
+        cv2.rectangle(frame2, (x, y), (x1, y1), color, 2)
     # 显示视频帧
-    cv2.imshow("transtream", frame)
+    cv2.imshow("transtream", frame2)
     # 等待按键输入
     next_frame_ms += frame_wait_ms
     wait_ms = next_frame_ms-int(time.time() * 1000)
@@ -138,5 +134,3 @@ cap.release()
 
 # 关闭所有窗口
 cv2.destroyAllWindows()
-
-logging.info(f"识别结果: {json.dumps(rec, indent=4)}")
