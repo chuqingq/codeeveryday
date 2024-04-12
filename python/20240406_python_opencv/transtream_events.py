@@ -78,6 +78,9 @@ cv2.resizeWindow('transtream', int(1920/2), int(1080/2))
 
 last_events = []
 
+# 识别结果
+rec = {}
+
 # 循环读取视频帧
 while cap.isOpened():
     # 读取视频帧
@@ -103,16 +106,19 @@ while cap.isOpened():
         if event['type'] == 'person' and 'face' in event and event['face']['id']:
             color = (0, 255, 0)
             id = event['face']['id']
+            if id not in rec:
+                rec[id] = 0
+            rec[id] += 1
             logging.debug(f"人物 {id}")
             cv2.putText(frame2, id, (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
-            cv2.imshow('face', frame[y:y1, x:x1])
+            cv2.imshow(id, frame[y:y1, x:x1])
         elif event['type'] == 'car' and 'lp' in event and event['lp']['no']:
             color = (0, 255, 0)
             thickness = 2
             id = event['lp']['no']
             logging.debug(f"车牌 {id}")
             cv2.putText(frame2, id, (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
-            cv2.imshow('car', frame[y:y1, x:x1])
+            # cv2.imshow('car', frame[y:y1, x:x1])
         elif 'type' in event:
             cv2.putText(frame2, event['type'], (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
         # 画框
@@ -134,3 +140,5 @@ cap.release()
 
 # 关闭所有窗口
 cv2.destroyAllWindows()
+
+logging.info(f"识别结果: {rec}")
