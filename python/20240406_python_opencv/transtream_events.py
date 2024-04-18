@@ -5,6 +5,7 @@ import cv2
 import time
 import json
 import logging
+import base64
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -20,16 +21,20 @@ class EventsReader:
         self.buffer = ""
         self.cache_event = self.__read_one()
         self.diff_ms = (
-            int(time.time() * 1000) - self.cache_event["result"]["timeMs"]
+            int(time.time() * 1000) - self.cache_event["result"]["timeMs"] + 2000
         )
 
     def get_events(self):
         """根据时间戳获取一组事件"""
         events = []
         detect_ms = int(time.time() * 1000) - self.diff_ms
-        while (
-            self.cache_event and self.cache_event["result"]["timeMs"] <= detect_ms
-        ):
+        while self.cache_event and self.cache_event["result"]["timeMs"] <= detect_ms:
+            if len(self.cache_event["result"]["pic"]) > 0:
+                logging.debug(f"write pic {self.cache_event['result']['timeMs']}")
+                pic = base64.b64decode(self.cache_event["result"]["pic"])
+                picname = str(self.cache_event["result"]["timeMs"]) + ".jpg"
+                with open(picname, "wb") as f:
+                    f.write(pic)
             events.extend(self.cache_event["result"]["items"])
             self.cache_event = self.__read_one()
         return events
@@ -56,8 +61,10 @@ class EventsReader:
         self.file.close()
 
 
+dir = "./1/"
+
 # 读取视频文件
-cap = cv2.VideoCapture("1.mp4")
+cap = cv2.VideoCapture(dir + "1.mp4")
 
 video_fps = cap.get(cv2.CAP_PROP_FPS)
 frame_wait_ms = int(1000 / video_fps)
@@ -67,14 +74,14 @@ width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 logging.info(f"视频宽高: {width}x{height}")
 
-events_reader = EventsReader("transtream_events.txt")
+events_reader = EventsReader(dir + "transtream_events.txt")
 
 next_frame_ms = int(time.time() * 1000)
 
 # 创建窗口，设置合适的大小和位置
-cv2.namedWindow('transtream', cv2.WINDOW_NORMAL)
-cv2.moveWindow('transtream', 20, 20) 
-cv2.resizeWindow('transtream', int(1920/2), int(1080/2))
+cv2.namedWindow("transtream", cv2.WINDOW_NORMAL)
+cv2.moveWindow("transtream", 20, 20)
+cv2.resizeWindow("transtream", int(1920 / 2), int(1080 / 2))
 
 last_events = []
 
@@ -103,31 +110,44 @@ while cap.isOpened():
         y1 = int(event["loc"]["y1"] * height)
         color = (255, 0, 0)
         # 如果是车或者人
-        if event['type'] == 'person' and 'face' in event and event['face']['id']:
+        if event["type"] == "person" and "face" in event and event["face"]["id"]:
             color = (0, 255, 0)
-            id = event['face']['id']
+            id = event["face"]["id"]
             if id not in rec:
                 rec[id] = 0
             rec[id] += 1
             logging.debug(f"人物 {id}")
-            cv2.putText(frame2, id, (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
-            cv2.imshow(id, frame[y:y1, x:x1])
-        elif event['type'] == 'car' and 'lp' in event and event['lp']['no']:
+            cv2.putText(
+                frame2, id, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2
+            )
+            f = cv2.resize(frame[y:y1, x:x1], None, fx=0.5, fy=0.5)
+            cv2.imshow(id, f)
+        elif event["type"] == "car" and "lp" in event and event["lp"]["no"]:
             color = (0, 255, 0)
             thickness = 2
-            id = event['lp']['no']
+            id = event["lp"]["no"]
             logging.debug(f"车牌 {id}")
-            cv2.putText(frame2, id, (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+            cv2.putText(
+                frame2, id, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2
+            )
             # cv2.imshow('car', frame[y:y1, x:x1])
-        elif 'type' in event:
-            cv2.putText(frame2, event['type'], (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+        elif "type" in event:
+            cv2.putText(
+                frame2,
+                event["type"],
+                (x, y - 10),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.5,
+                color,
+                2,
+            )
         # 画框
         cv2.rectangle(frame2, (x, y), (x1, y1), color, 2)
     # 显示视频帧
     cv2.imshow("transtream", frame2)
     # 等待按键输入
     next_frame_ms += frame_wait_ms
-    wait_ms = next_frame_ms-int(time.time() * 1000)
+    wait_ms = next_frame_ms - int(time.time() * 1000)
     if wait_ms <= 0:
         wait_ms = 1
     if cv2.waitKey(wait_ms) & 0xFF == ord("q"):
