@@ -1,0 +1,23 @@
+#!/usr/bin/env python
+
+import asyncio
+
+async def read_input_and_write_output():
+    while True:
+        try:
+            # 从标准输入读取一行数据
+            input_data = await asyncio.get_event_loop().run_in_executor(None, input)
+            if not input_data:
+                break  # 当没有更多输入时退出循环
+            # 将数据写入到标准输出
+            print(input_data)
+        except EOFError:
+            break  # 当没有更多输入时退出循环
+    print("do_transtream end")
+
+# 主函数，运行异步任务
+async def main():
+    await read_input_and_write_output()
+
+# 运行主函数
+asyncio.run(main())
